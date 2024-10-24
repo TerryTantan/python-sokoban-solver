@@ -50,19 +50,25 @@ class BaseSearch:
             self.node_count += 1
 
             # self.grid.reset_grid(node.position, node.stones)
+            self.visited.add(node)
 
             if self.is_goal_state(node):
                 self.path = "".join(node.get_path())
                 flag = True
-                # break
-
-            self.visited.add(node)
+                break
 
             for direction in MOVEMENTS:
                 self.grid.reset_grid(node.position, node.stones)
-                # print(self.grid)
-                # print(direction)
+                print(direction)
+                print(self.grid, end="\n")
                 child_node = self.perform_move(node, direction)
+                print(child_node)
+                print(self.grid, end="\n\n\n\n\n")
+
+                # if self.is_goal_state(child_node):
+                #     self.path = "".join(child_node.get_path())
+                #     flag = True
+                #     break
 
                 if child_node is not None and child_node not in self.visited:
                     self.next_node_data_structure.add(child_node)
@@ -104,6 +110,7 @@ class BaseSearch:
         """
 
         action = self.grid.move_ares(direction, weight=self.weight)
+        # print(action)
         # print(self.grid.ares_position)
 
         if not action:
@@ -134,7 +141,6 @@ class BaseSearch:
         for [rol, col, weight] in node.stones:
             if (rol, col) in self.grid.switches:
                 count += 1
-
         return count == len(self.grid.switches)
 
     def get_solution(self) -> Solution:

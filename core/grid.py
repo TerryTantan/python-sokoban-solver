@@ -65,7 +65,7 @@ class Grid:
             (row, col, weight) for (row, col), weight in zip(self.stones, self.weights)
         ]
 
-        self.current_stones = self.stones
+        self.current_stones = deepcopy(self.stones)
 
         # Switches are represented by '.' or '+' or '*'
         self.switches = (
@@ -324,8 +324,8 @@ class Grid:
             else:
                 self.grid[new_row][new_col] = GridConstants.STONE
 
-        self.current_stones = new_stones_positions
-        self.ares_position = new_ares_position
+        self.current_stones = deepcopy(new_stones_positions)
+        self.ares_position = deepcopy(new_ares_position)
 
     def copy(self):
         """

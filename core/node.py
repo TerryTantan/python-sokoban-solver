@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 class Node:
     """
     A class to represent a node in the search algorithm.
@@ -16,7 +19,7 @@ class Node:
         position: tuple[int, int],
         stones: list[tuple[int, int, int]],
         parent=None,
-        action=None,
+        action: str = "",
         g_cost=0,
         h_cost=0,
     ):
@@ -31,10 +34,10 @@ class Node:
             g_cost (int, optional): The cost to reach this node. Defaults to 0.
             h_cost (int, optional): The heuristic cost to reach the goal. Defaults to 0.
         """
-        self.position = position
-        self.stones = stones
+        self.position = deepcopy(position)
+        self.stones = deepcopy(stones)
         self.parent = parent
-        self.action = action
+        self.action = deepcopy(action)
         self.g_cost = g_cost
         self.h_cost = h_cost
 
@@ -61,6 +64,4 @@ class Node:
         return path[::-1]  # Reverse the path to get the correct order
 
     def __str__(self) -> str:
-        return (
-            f"Node: {self.position}, Stones: {self.stones}, Cost: {self.total_cost()}"
-        )
+        return f"Node: {self.position}, Stones: {self.stones}, Cost: {self.total_cost()}, Action: {self.action}"
