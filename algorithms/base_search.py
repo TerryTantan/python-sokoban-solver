@@ -47,29 +47,19 @@ class BaseSearch:
 
         while not self.next_node_data_structure.is_empty():
             node = self.next_node_data_structure.pop()
-            self.grid.reset_grid(node.position, node.stones)
             self.node_count += 1
 
-            # self.grid.reset_grid(node.position, node.stones)
             self.visited.add(node)
 
             if self.is_goal_state(node):
                 self.path = "".join(node.get_path())
+                self.result_weight = node.weight
                 flag = True
                 break
 
             for direction in MOVEMENTS:
                 self.grid.reset_grid(node.position, node.stones)
-                # print(direction)
-                # print(self.grid, end="\n")
                 child_node = self.perform_move(node, direction)
-                # print(child_node)
-                # print(self.grid, end="\n\n\n\n\n")
-
-                # if self.is_goal_state(child_node):
-                #     self.path = "".join(child_node.get_path())
-                #     flag = True
-                #     break
 
                 if child_node is not None and child_node not in self.visited:
                     self.next_node_data_structure.add(child_node)
@@ -89,7 +79,7 @@ class BaseSearch:
 
         self.solution = Solution(
             len(self.path),
-            self.weight[0],
+            self.result_weight,
             self.node_count,
             self.execution_time,
             self.memory_used,
@@ -109,7 +99,7 @@ class BaseSearch:
         Returns:
             Node: The resulting node after performing the action.
         """
-
+        prev_weight = self.weight[0]
         action = self.grid.move_ares(direction, weight=self.weight)
         # print(action)
         # print(self.grid.ares_position)
@@ -124,6 +114,7 @@ class BaseSearch:
             action,
             self.calculate_g(node),
             self.calculate_h(node),
+            node.weight + self.weight[0] - prev_weight,
         )
 
     def is_goal_state(self, node: Node) -> bool:
