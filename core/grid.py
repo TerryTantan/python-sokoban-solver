@@ -11,15 +11,20 @@ class Grid:
     of Ares (the player), stones, walls, and switches. The class also provides functionality for movement,
     checking valid moves, and determining if the game state is solved.
 
+    Parameters:
+        weight_data (str): The weights of each stone in the grid from top left to bottom right.
+        grid_data (list of str): A list of strings where each string represents a row of the game grid
+
     Attributes:
+        weights (list of int): The weights of each stone in the grid from top left to bottom right.
         grid (list of list of str): The 2D grid representing the game board.
         ares_position (tuple): The (row, col) position of Ares.
-        stones (list of tuple): List of positions of all stones in the grid.
+        stones (list of tuple): List of positions of all stones in the grid. Each stone is represented by a tuple (row, col).
         switches (list of tuple): List of positions of all switches in the grid.
         walls (list of tuple): List of positions of all walls in the grid.
     """
 
-    def __init__(self, grid_data):
+    def __init__(self, weight_data: str, grid_data: list):
         """
         Initialize the grid for the Sokoban game.
 
@@ -35,6 +40,9 @@ class Grid:
             - '*' for stones placed on switches
             - '+' for Ares on a switch
         """
+        # Convert the weight data to a list of integers
+        self.weights = list(map(int, weight_data.split()))
+
         # Convert each row to a 2D list
         self.grid = [list(row) for row in grid_data]
         # Find the positions of Ares, stones, switches, and walls
@@ -48,6 +56,9 @@ class Grid:
         self.stones = self.find_all_positions(
             GridConstants.STONE
         ) + self.find_all_positions(GridConstants.STONE_ON_SWITCH)
+
+        # Sort the stones row increasing and then column increasing
+        self.stones = sorted(self.stones, key=lambda x: (x[0], x[1]))
 
         # Switches are represented by '.' or '+' or '*'
         self.switches = (
