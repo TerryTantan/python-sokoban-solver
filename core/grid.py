@@ -1,5 +1,5 @@
 from copy import deepcopy
-from ..configs.constants import MOVE_CHARS, MOVEMENTS, PUSH_CHARS, GridConstants
+from configs.constants import MOVE_CHARS, MOVEMENTS, PUSH_CHARS, GridConstants
 
 
 """STATUS: Completed"""
@@ -65,6 +65,8 @@ class Grid:
             (row, col, weight) for (row, col), weight in zip(self.stones, self.weights)
         ]
 
+        self.current_stones = self.stones
+
         # Switches are represented by '.' or '+' or '*'
         self.switches = (
             self.find_all_positions(GridConstants.SWITCH)
@@ -108,7 +110,12 @@ class Grid:
                     positions.append((row_idx, col_idx))
         return positions
 
-    def move_ares(self, direction: str, update: bool = True) -> str | None:
+    def move_ares(
+        self,
+        direction: str,
+        # update: bool = True,
+        weight: list[int] = [0],
+    ) -> str | None:
         """
         Move Ares in a specified direction if the move is valid. If Ares encounters a stone, it will attempt
         to push it in the same direction.
@@ -137,15 +144,13 @@ class Grid:
             # Move Ares to the new position
             if self.is_stone(new_row, new_col):
                 # Try to push the stone
-                if self.push_stone(new_row, new_col, delta_row, delta_col, update):
-                    # self.update_ares_position(new_row, new_col)
+                if self.push_stone(new_row, new_col, delta_row, delta_col, weight):
+                    self.update_ares_position(new_row, new_col)
                     return direction
                 return None
             else:
                 # Regular move
-                # No update for performance optimization
-                if update:
-                    self.update_ares_position(new_row, new_col)
+                self.update_ares_position(new_row, new_col)
                 return direction.lower()
 
         return None
@@ -180,7 +185,15 @@ class Grid:
             and self.grid[row][col] != GridConstants.WALL
         )
 
-    def push_stone(self, row, col, delta_row, delta_col, update: bool = True):
+    def push_stone(
+        self,
+        row,
+        col,
+        delta_row,
+        delta_col,
+        # update: bool = True,
+        weight: list[int] = [0],
+    ):
         """
         Attempt to push a stone in the specified direction.
 
@@ -198,8 +211,8 @@ class Grid:
             new_row, new_col
         ):
             # Move the stone to the new position
-            if update:
-                self.update_stone_position((row, col), (new_row, new_col))
+            # if update:
+            weight[0] += self.update_stone_position((row, col), (new_row, new_col))
             return True
 
         return False
@@ -227,7 +240,7 @@ class Grid:
 
         self.ares_position = (new_row, new_col)
 
-    def update_stone_position(self, old_pos, new_pos):
+    def update_stone_position(self, old_pos, new_pos) -> int:
         """
         Update the position of a stone in the grid.
 
@@ -250,6 +263,12 @@ class Grid:
             self.grid[new_row][new_col] = GridConstants.STONE_ON_SWITCH
         else:
             self.grid[new_row][new_col] = GridConstants.STONE
+
+        # Update the stone's position in the list of stones
+        for idx, (row, col, weight) in enumerate(self.current_stones):
+            if (row, col) == (old_row, old_col):
+                self.current_stones[idx] = (new_row, new_col, weight)
+                return weight
 
     def is_goal(self):
         """
@@ -275,15 +294,15 @@ class Grid:
             new_ares_position (row, col): The new position of Ares.
             new_stones_positions (list of tuple(row, col, weight)): The new positions of the stones.
         """
-        # Set all switch positions to normal switch
-        for row, col in self.switches:
-            self.grid[row][col] = GridConstants.SWITCH
-
         # Reset all position to free space, except walls and switches
         for row_idx, row in enumerate(self.grid):
             for col_idx, cell in enumerate(row):
-                if cell not in [GridConstants.WALL, GridConstants.SWITCH]:
+                if cell not in [GridConstants.WALL]:
                     self.grid[row_idx][col_idx] = GridConstants.FREE_SPACE
+
+        # Set all switch positions to normal switch
+        for row, col in self.switches:
+            self.grid[row][col] = GridConstants.SWITCH
 
         # Update the new Ares position
         # If Ares is on a switch, update the switch character
@@ -305,6 +324,9 @@ class Grid:
             else:
                 self.grid[new_row][new_col] = GridConstants.STONE
 
+        self.current_stones = new_stones_positions
+        self.ares_position = new_ares_position
+
     def copy(self):
         """
         Create a deep copy of the current grid state.
@@ -314,3 +336,12 @@ class Grid:
             Grid: A new Grid object with the same state.
         """
         return Grid(deepcopy(self.grid))
+
+    def __str__(self):
+        """
+        Return a string representation of the grid.
+
+        Returns:
+            str: A string representation of the grid.
+        """
+        return "\n".join("".join(row) for row in self.grid)

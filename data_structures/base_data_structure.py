@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
-from ..core.node import Node
+from core.node import Node
 from collections import deque
+from typing import Union, Any
 
 
 class BaseDataStructure(ABC):
-    def __init__(self, container: list | deque | any):
+    def __init__(self, container: Union[list, deque, Any]):
         self.container = container
 
     @abstractmethod

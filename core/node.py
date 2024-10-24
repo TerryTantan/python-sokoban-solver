@@ -59,3 +59,8 @@ class Node:
                 path.append(current_node.action)
             current_node = current_node.parent
         return path[::-1]  # Reverse the path to get the correct order
+
+    def __str__(self) -> str:
+        return (
+            f"Node: {self.position}, Stones: {self.stones}, Cost: {self.total_cost()}"
+        )

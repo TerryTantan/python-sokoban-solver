@@ -5,7 +5,7 @@ from collections import deque
 
 class Queue(BaseDataStructure):
     def __init__(self):
-        super().__init__(container=deque())
+        super().__init__(container=deque[Node]())
 
     def add(self, item: Node):
         """Enqueue an item into the queue."""

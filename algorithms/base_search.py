@@ -1,7 +1,27 @@
-from ..data_structures.base_data_structure import BaseDataStructure
-from ..core.grid import Grid
-from ..core.node import Node
-from ..configs.constants import MOVEMENTS
+from data_structures.base_data_structure import BaseDataStructure
+from core.grid import Grid
+from core.node import Node
+from configs.constants import MOVEMENTS
+import time
+import tracemalloc
+
+
+class Solution:
+    def __init__(
+        self, steps: int, weight: int, node_count: int, time, memory: float, path: str
+    ) -> None:
+        self.steps = steps
+        self.weight = weight
+        self.node_count = node_count
+        self.time = time
+        self.memory = memory
+        self.path = path
+
+    def __str__(self) -> str:
+        return (
+            f"Steps: {self.steps}, Weight: {self.weight}, Node: {self.node_count}, "
+            f"Time (ms): {self.time:.2f}, Memory (MB): {self.memory:.2f}\n{self.path}"
+        )
 
 
 class BaseSearch:
@@ -9,33 +29,67 @@ class BaseSearch:
         self.next_node_data_structure = next_node_data_structure
         self.grid = grid
         self.visited = set[Node]()  # Set of visited nodes
-        self.solution = list[str]()  # List of actions leading to the solution
         self.node_count = 0  # Number of nodes visited
+        self.weight = [0]
+        self.path = ""  # Path to the goal state
+        self.execution_time = 0.0  # To store execution time in milliseconds
+        self.memory_used = 0.0  # To store peak memory usage in MB
+        self.start_time = time.perf_counter()
+        # Start memory tracking
+        tracemalloc.start()
 
     def search(self) -> bool:
-        init_node = Node(self.grid.ares, self.grid.stones)
+        init_node = Node(self.grid.ares_position, self.grid.stones)
         self.next_node_data_structure.add(init_node)
+
+        flag = False
 
         while not self.next_node_data_structure.is_empty():
             node = self.next_node_data_structure.pop()
+            self.grid.reset_grid(node.position, node.stones)
             self.node_count += 1
 
-            self.grid.reset_grid(node.position, node.stones)
+            # self.grid.reset_grid(node.position, node.stones)
 
             if self.is_goal_state(node):
-                self.solution = node.get_path()
-                self.steps = len(self.solution)
-                return True
+                self.path = "".join(node.get_path())
+                flag = True
+                # break
 
             self.visited.add(node)
 
             for direction in MOVEMENTS:
+                self.grid.reset_grid(node.position, node.stones)
+                # print(self.grid)
+                # print(direction)
                 child_node = self.perform_move(node, direction)
 
                 if child_node is not None and child_node not in self.visited:
                     self.next_node_data_structure.add(child_node)
 
-        return False
+        # Stop memory tracking and get peak memory
+        _, peak_memory = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+
+        # Stop the timer
+        self.end_time = time.perf_counter()
+
+        # Calculate time and memory usage
+        self.execution_time = (
+            self.end_time - self.start_time
+        ) * 1000  # Convert to milliseconds
+        self.memory_used = peak_memory / (1024 * 1024)  # Convert to MB
+
+        self.solution = Solution(
+            len(self.path),
+            self.weight[0],
+            self.node_count,
+            self.execution_time,
+            self.memory_used,
+            self.path,
+        )
+
+        return flag
 
     def perform_move(self, node: Node, direction: str) -> Node | None:
         """
@@ -49,12 +103,20 @@ class BaseSearch:
             Node: The resulting node after performing the action.
         """
 
-        action = self.grid.move_ares(direction, update=False)
+        action = self.grid.move_ares(direction, weight=self.weight)
+        # print(self.grid.ares_position)
 
-        if action is None:
+        if not action:
             return None
 
-        return Node(self.grid.ares_position, self.grid.stones, node, action, 0, 0)
+        return Node(
+            self.grid.ares_position,
+            self.grid.current_stones,
+            node,
+            action,
+            self.calculate_g(node),
+            self.calculate_h(node),
+        )
 
     def is_goal_state(self, node: Node) -> bool:
         """
@@ -74,3 +136,12 @@ class BaseSearch:
                 count += 1
 
         return count == len(self.grid.switches)
+
+    def get_solution(self) -> Solution:
+        return self.solution
+
+    def calculate_g(self, node: Node) -> int:
+        return 0
+
+    def calculate_h(self, node: Node) -> int:
+        return 0
