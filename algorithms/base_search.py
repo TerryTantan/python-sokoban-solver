@@ -34,9 +34,10 @@ class BaseSearch:
         self.path = ""  # Path to the goal state
         self.execution_time = 0.0  # To store execution time in milliseconds
         self.memory_used = 0.0  # To store peak memory usage in MB
-        self.start_time = time.perf_counter()
         # Start memory tracking
         tracemalloc.start()
+
+        self.start_time = time.perf_counter()
 
     def search(self) -> bool:
         init_node = Node(self.grid.ares_position, self.grid.stones)
@@ -59,11 +60,11 @@ class BaseSearch:
 
             for direction in MOVEMENTS:
                 self.grid.reset_grid(node.position, node.stones)
-                print(direction)
-                print(self.grid, end="\n")
+                # print(direction)
+                # print(self.grid, end="\n")
                 child_node = self.perform_move(node, direction)
-                print(child_node)
-                print(self.grid, end="\n\n\n\n\n")
+                # print(child_node)
+                # print(self.grid, end="\n\n\n\n\n")
 
                 # if self.is_goal_state(child_node):
                 #     self.path = "".join(child_node.get_path())
@@ -73,12 +74,12 @@ class BaseSearch:
                 if child_node is not None and child_node not in self.visited:
                     self.next_node_data_structure.add(child_node)
 
+        # Stop the timer
+        self.end_time = time.perf_counter()
+
         # Stop memory tracking and get peak memory
         _, peak_memory = tracemalloc.get_traced_memory()
         tracemalloc.stop()
-
-        # Stop the timer
-        self.end_time = time.perf_counter()
 
         # Calculate time and memory usage
         self.execution_time = (
