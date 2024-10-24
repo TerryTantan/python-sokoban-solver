@@ -2,19 +2,7 @@ from copy import deepcopy
 from ..configs.constants import MOVE_CHARS, MOVEMENTS, PUSH_CHARS, GridConstants
 
 
-"""TODO: Implement the Grid class.
-core/grid.py
-Implement the Grid class to represent the game state.
-
-Define the Grid class:
-Attributes: grid, ares_position, stones, switches, walls.
-Methods:
-__init__ to initialize the grid.
-move(direction) for Ares's movement.
-push(direction) for pushing a stone.
-is_goal() to check if the current state is the goal.
-copy() to create a deep copy of the grid state.
-"""
+"""STATUS: Completed"""
 
 
 class Grid:
@@ -170,7 +158,7 @@ class Grid:
         """
         return (
             0 <= row < len(self.grid)
-            and 0 <= col < len(self.grid[0])
+            and 0 <= col < len(self.grid[row])  # rows may have different number of cols
             and self.grid[row][col] != GridConstants.WALL
         )
 
@@ -263,6 +251,7 @@ class Grid:
     def copy(self):
         """
         Create a deep copy of the current grid state.
+        Purpose: To create a copy of the grid state for simulation purposes.
 
         Returns:
             Grid: A new Grid object with the same state.
