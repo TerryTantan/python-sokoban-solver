@@ -1,0 +1,53 @@
+class Node:
+    """
+    A class to represent a node in the search algorithm.
+
+    Attributes:
+        position (tuple): A tuple representing the (row, column) position of Ares.
+        stones (list): A list of tuples representing the positions of stones in the grid.
+        parent (Node): The parent node from which this node was derived.
+        action (str): The action taken to reach this node (e.g., 'u', 'd', 'l', 'r', 'U', 'D', 'L', 'R').
+        g_cost (int): The cost to reach this node from the start node (for pathfinding algorithms).
+        h_cost (int): The heuristic cost estimate to reach the goal from this node (for A* algorithm).
+    """
+
+    def __init__(self, position, stones, parent=None, action=None, g_cost=0, h_cost=0):
+        """
+        Initializes a Node with the given parameters.
+
+        Args:
+            position (tuple): The (row, column) position of Ares.
+            stones (list): The current positions of stones on the grid.
+            parent (Node, optional): The parent node. Defaults to None.
+            action (str, optional): The action taken to reach this node. Defaults to None.
+            g_cost (int, optional): The cost to reach this node. Defaults to 0.
+            h_cost (int, optional): The heuristic cost to reach the goal. Defaults to 0.
+        """
+        self.position = position
+        self.stones = stones
+        self.parent = parent
+        self.action = action
+        self.g_cost = g_cost
+        self.h_cost = h_cost
+
+    def __eq__(self, other):
+        """Check if two nodes are equal based on their position and stones."""
+        return (self.position == other.position) and (self.stones == other.stones)
+
+    def __hash__(self):
+        """Generate a hash for the node based on its position and stones."""
+        return hash((self.position, tuple(self.stones)))
+
+    def total_cost(self):
+        """Calculate the total cost of the node (g_cost + h_cost)."""
+        return self.g_cost + self.h_cost
+
+    def get_path(self):
+        """Retrieve the path of actions taken to reach this node from the start node."""
+        path = []
+        current_node = self
+        while current_node:
+            if current_node.action:
+                path.append(current_node.action)
+            current_node = current_node.parent
+        return path[::-1]  # Reverse the path to get the correct order
