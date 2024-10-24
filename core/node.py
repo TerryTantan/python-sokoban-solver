@@ -22,6 +22,7 @@ class Node:
         action: str = "",
         g_cost=0,
         h_cost=0,
+        weight=0,
     ):
         """
         Initializes a Node with the given parameters.
@@ -40,6 +41,7 @@ class Node:
         self.action = deepcopy(action)
         self.g_cost = g_cost
         self.h_cost = h_cost
+        self.weight = weight
 
     def __eq__(self, other):
         """Check if two nodes are equal based on their position and stones."""
