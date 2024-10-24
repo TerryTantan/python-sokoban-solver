@@ -11,13 +11,21 @@ class Node:
         h_cost (int): The heuristic cost estimate to reach the goal from this node (for A* algorithm).
     """
 
-    def __init__(self, position, stones, parent=None, action=None, g_cost=0, h_cost=0):
+    def __init__(
+        self,
+        position: tuple[int, int],
+        stones: list[tuple[int, int, int]],
+        parent=None,
+        action=None,
+        g_cost=0,
+        h_cost=0,
+    ):
         """
         Initializes a Node with the given parameters.
 
         Args:
             position (tuple): The (row, column) position of Ares.
-            stones (list): The current positions of stones on the grid.
+            stones (list of tuple(row, col, weight)): The current positions of stones on the grid.
             parent (Node, optional): The parent node. Defaults to None.
             action (str, optional): The action taken to reach this node. Defaults to None.
             g_cost (int, optional): The cost to reach this node. Defaults to 0.
