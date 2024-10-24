@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from ..core.node import Node
 from collections import deque
-
+from queue import PriorityQueue
 
 class BaseDataStructure(ABC):
-    def __init__(self, container: list | deque | any):
+    def __init__(self, container: list | deque):
         self.container = container
 
     @abstractmethod
