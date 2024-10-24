@@ -1,6 +1,7 @@
 from custom_io.input_output_handler import InputOutputHandler as IOHandler
 from algorithms.dfs import DFS
 from algorithms.bfs import BFS
+from algorithms.ucs import UCS
 from algorithms.base_search import BaseSearch, Solution
 from core.grid import Grid
 
@@ -22,6 +23,8 @@ class Solver:
             algorithm = DFS(initial_grid)
         elif self.algorithm_name == "BFS":
             algorithm = BFS(initial_grid)
+        elif self.algorithm_name == "UCS":
+            algorithm = UCS(initial_grid)
         else:
             raise ValueError("Invalid algorithm name")
         # Add other algorithms here (BFS, UCS, AStar)

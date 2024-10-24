@@ -4,6 +4,7 @@ from core.node import Node
 from configs.constants import MOVEMENTS
 import time
 import tracemalloc
+from abc import ABC, abstractmethod
 
 
 class Solution:
@@ -24,7 +25,7 @@ class Solution:
         )
 
 
-class BaseSearch:
+class BaseSearch(ABC):
     def __init__(self, next_node_data_structure: BaseDataStructure, grid: Grid) -> None:
         self.next_node_data_structure = next_node_data_structure
         self.grid = grid
@@ -110,19 +111,20 @@ class BaseSearch:
             Node: The resulting node after performing the action.
         """
 
-        action = self.grid.move_ares(direction, weight=self.weight)
+        action, pushCost = self.grid.move_ares(direction, weight=self.weight)
         # print(action)
         # print(self.grid.ares_position)
 
         if not action:
             return None
 
+        # Create new node
         return Node(
             self.grid.ares_position,
             self.grid.current_stones,
             node,
             action,
-            self.calculate_g(node),
+            self.calculate_g(node) + pushCost,
             self.calculate_h(node),
         )
 
@@ -147,8 +149,12 @@ class BaseSearch:
     def get_solution(self) -> Solution:
         return self.solution
 
+    @abstractmethod
     def calculate_g(self, node: Node) -> int:
-        return 0
+        """Calculate the cost from the start node to the current node."""
+        pass
 
+    @abstractmethod
     def calculate_h(self, node: Node) -> int:
-        return 0
+        """Calculate the heuristic cost from the current node to the goal node."""
+        pass

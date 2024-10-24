@@ -49,7 +49,7 @@ class Node:
         """Generate a hash for the node based on its position and stones."""
         return hash((self.position, tuple(self.stones)))
 
-    def total_cost(self):
+    def total_cost(self) -> int:
         """Calculate the total cost of the node (g_cost + h_cost)."""
         return self.g_cost + self.h_cost
 
@@ -65,3 +65,7 @@ class Node:
 
     def __str__(self) -> str:
         return f"Node: {self.position}, Stones: {self.stones}, Cost: {self.total_cost()}, Action: {self.action}"
+    
+    def __lt__(self, other):
+        """Return True if the data structure is less than the other data structure."""
+        return True

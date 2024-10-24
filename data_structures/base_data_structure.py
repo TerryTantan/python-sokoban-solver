@@ -30,3 +30,4 @@ class BaseDataStructure(ABC):
     def __len__(self):
         """Return the number of items in the data structure."""
         return len(self.container)
+

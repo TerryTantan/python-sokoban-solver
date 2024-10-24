@@ -127,13 +127,14 @@ class Grid:
 
         Returns:
             str or None: The direction moved in lowercase if successful, otherwise
+            int: The weight of the stone that was pushed.
         """
         # Get the row and column deltas for the specified direction
         direction_delta = MOVEMENTS  # MOVEMENTS = {"U": (-1, 0), "D": (1, 0), "L": (0, -1), "R": (0, 1)}
 
         # Check if the direction is valid
         if direction not in direction_delta:
-            return None
+            return None, None
 
         delta_row, delta_col = direction_delta[direction]
         current_row, current_col = self.ares_position
@@ -145,15 +146,22 @@ class Grid:
             if self.is_stone(new_row, new_col):
                 # Try to push the stone
                 if self.push_stone(new_row, new_col, delta_row, delta_col, weight):
+                    pushCost = self.get_stone_weight(new_row + delta_row, new_col + delta_col)
                     self.update_ares_position(new_row, new_col)
-                    return direction
-                return None
+                    return direction, pushCost
+                return None, 0
             else:
                 # Regular move
                 self.update_ares_position(new_row, new_col)
-                return direction.lower()
+                return direction.lower(), 0
 
-        return None
+        return None, None
+    
+    def get_stone_weight(self, row, col):
+        for (r, c, weight) in self.current_stones:
+            if r == row and c == col:
+                return weight
+        return 0
 
     def is_stone(self, row, col):
         """
