@@ -5,7 +5,7 @@ from collections import deque
 
 class Stack(BaseDataStructure):
     def __init__(self):
-        super().__init__(container=deque())
+        super().__init__(container=deque[Node]())
 
     def add(self, item: Node):
         """Push an item onto the stack."""

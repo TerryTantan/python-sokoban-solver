@@ -1,8 +1,7 @@
-import os
-from ..core.grid import Grid
+from core.grid import Grid
 
 
-class IOHandler:
+class InputOutputHandler:
     """
     A class to handle reading input for the Sokoban game.
 
@@ -22,6 +21,6 @@ class IOHandler:
 
         return Grid(weight_data, grid_data)
 
-    def save_to_file(self) -> None:
+    def save_to_file(self, data: str) -> None:
         with open(self.output_path, "w") as file:
-            file.write("Hello world!")
+            file.write(data)

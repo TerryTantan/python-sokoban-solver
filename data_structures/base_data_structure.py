@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
-from ..core.node import Node
+from core.node import Node
 from collections import deque
 from queue import PriorityQueue
+from typing import Union, Any
+
 
 class BaseDataStructure(ABC):
     def __init__(self, container: list | deque):
