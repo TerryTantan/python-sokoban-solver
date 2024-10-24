@@ -19,7 +19,7 @@ class Grid:
         weights (list of int): The weights of each stone in the grid from top left to bottom right.
         grid (list of list of str): The 2D grid representing the game board.
         ares_position (tuple): The (row, col) position of Ares.
-        stones (list of tuple): List of positions of all stones in the grid. Each stone is represented by a tuple (row, col).
+        stones (list of tuple): List of positions of all stones in the grid. Each stone is represented by a tuple (row, col, weight).
         switches (list of tuple): List of positions of all switches in the grid.
         walls (list of tuple): List of positions of all walls in the grid.
     """
@@ -59,6 +59,11 @@ class Grid:
 
         # Sort the stones row increasing and then column increasing
         self.stones = sorted(self.stones, key=lambda x: (x[0], x[1]))
+
+        # Combine the stones with their weights
+        self.stones = [
+            (row, col, weight) for (row, col), weight in zip(self.stones, self.weights)
+        ]
 
         # Switches are represented by '.' or '+' or '*'
         self.switches = (
@@ -103,7 +108,7 @@ class Grid:
                     positions.append((row_idx, col_idx))
         return positions
 
-    def move_ares(self, direction):
+    def move_ares(self, direction: str, update: bool = True) -> str | None:
         """
         Move Ares in a specified direction if the move is valid. If Ares encounters a stone, it will attempt
         to push it in the same direction.
@@ -114,14 +119,14 @@ class Grid:
             direction (str): The direction to move Ares. Valid values are 'U' (up), 'D' (down), 'L' (left), 'R' (right).
 
         Returns:
-            bool: True if the move is successful, False otherwise.
+            str or None: The direction moved in lowercase if successful, otherwise
         """
         # Get the row and column deltas for the specified direction
         direction_delta = MOVEMENTS  # MOVEMENTS = {"U": (-1, 0), "D": (1, 0), "L": (0, -1), "R": (0, 1)}
 
         # Check if the direction is valid
         if direction not in direction_delta:
-            return False
+            return None
 
         delta_row, delta_col = direction_delta[direction]
         current_row, current_col = self.ares_position
@@ -132,16 +137,18 @@ class Grid:
             # Move Ares to the new position
             if self.is_stone(new_row, new_col):
                 # Try to push the stone
-                if self.push_stone(new_row, new_col, delta_row, delta_col):
-                    self.update_ares_position(new_row, new_col)
-                    return True
-                return False
+                if self.push_stone(new_row, new_col, delta_row, delta_col, update):
+                    # self.update_ares_position(new_row, new_col)
+                    return direction
+                return None
             else:
                 # Regular move
-                self.update_ares_position(new_row, new_col)
-                return True
+                # No update for performance optimization
+                if update:
+                    self.update_ares_position(new_row, new_col)
+                return direction.lower()
 
-        return False
+        return None
 
     def is_stone(self, row, col):
         """
@@ -173,7 +180,7 @@ class Grid:
             and self.grid[row][col] != GridConstants.WALL
         )
 
-    def push_stone(self, row, col, delta_row, delta_col):
+    def push_stone(self, row, col, delta_row, delta_col, update: bool = True):
         """
         Attempt to push a stone in the specified direction.
 
@@ -191,7 +198,8 @@ class Grid:
             new_row, new_col
         ):
             # Move the stone to the new position
-            self.update_stone_position((row, col), (new_row, new_col))
+            if update:
+                self.update_stone_position((row, col), (new_row, new_col))
             return True
 
         return False
@@ -258,6 +266,44 @@ class Grid:
             ]:
                 return False
         return True
+
+    def reset_grid(self, new_ares_position, new_stones_positions):
+        """
+        Reset the grid to the initial state with the specified Ares position and stone positions.
+
+        Args:
+            new_ares_position (row, col): The new position of Ares.
+            new_stones_positions (list of tuple(row, col, weight)): The new positions of the stones.
+        """
+        # Set all switch positions to normal switch
+        for row, col in self.switches:
+            self.grid[row][col] = GridConstants.SWITCH
+
+        # Reset all position to free space, except walls and switches
+        for row_idx, row in enumerate(self.grid):
+            for col_idx, cell in enumerate(row):
+                if cell not in [GridConstants.WALL, GridConstants.SWITCH]:
+                    self.grid[row_idx][col_idx] = GridConstants.FREE_SPACE
+
+        # Update the new Ares position
+        # If Ares is on a switch, update the switch character
+        if (
+            self.grid[new_ares_position[0]][new_ares_position[1]]
+            == GridConstants.SWITCH
+        ):
+            self.grid[new_ares_position[0]][new_ares_position[1]] = (
+                GridConstants.ARES_ON_SWITCH
+            )
+        else:
+            self.grid[new_ares_position[0]][new_ares_position[1]] = GridConstants.ARES
+
+        # Update the new stone positions
+        # If a stone is on a switch, update the switch character
+        for new_row, new_col, weight in new_stones_positions:
+            if self.grid[new_row][new_col] == GridConstants.SWITCH:
+                self.grid[new_row][new_col] = GridConstants.STONE_ON_SWITCH
+            else:
+                self.grid[new_row][new_col] = GridConstants.STONE
 
     def copy(self):
         """
