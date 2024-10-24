@@ -101,24 +101,24 @@ class BaseSearch(ABC):
             Node: The resulting node after performing the action.
         """
         prev_weight = self.weight[0]
-        action, pushCost = self.grid.move_ares(direction, weight=self.weight)
-
-        # print(action)
-        # print(self.grid.ares_position)
+        action, push_cost = self.grid.move_ares(direction, weight=self.weight)
 
         if not action:
             return None
 
         # Create new node
-        return Node(
-            self.grid.ares_position,
-            self.grid.current_stones,
-            node,
-            action,
-            self.calculate_g(node) + pushCost,
-            self.calculate_h(node),
-            node.weight + self.weight[0] - prev_weight,
+        new_node = Node(
+                position=self.grid.ares_position,
+                stones=self.grid.current_stones,
+                parent=node,
+                action=action,
+                weight=node.weight + self.weight[0] - prev_weight,
         )
+        
+        new_node.g_cost = self.calculate_g(new_node, push_cost)
+        new_node.h_cost = self.calculate_h(new_node)
+
+        return new_node
 
     def is_goal_state(self, node: Node) -> bool:
         """
@@ -142,7 +142,7 @@ class BaseSearch(ABC):
         return self.solution
 
     @abstractmethod
-    def calculate_g(self, node: Node) -> int:
+    def calculate_g(self, node: Node, push_cost: int) -> int:
         """Calculate the cost from the start node to the current node."""
         pass
 
