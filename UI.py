@@ -1,6 +1,45 @@
 import pygame
 import sys
 import os
+from solver import Solver
+import threading
+import queue
+
+time_out = 0.01
+
+solver_result = queue.Queue()
+def solve_level(text):
+    level_str = ""
+    if level < 10:
+        level_str = "0" + level.__str__()
+    else :
+        level_str = level.__str__()
+    solver = Solver(text, f"inputs/input-{level_str}.txt", f"outputs/output-{level_str}.txt")
+    result = solver.run()
+    result = result.strip()
+    for move in result:
+        solver_result.put(move.lower())
+
+def start_solver(text):
+    solver_thread = threading.Thread(target=solve_level, args=(text,))
+    solver_thread.start()
+
+def illustrate_solution():
+    import time
+    global state
+    while state == "illustrating" or state == "pausing":
+        if not solver_result.empty() and state == "illustrating":
+            move = solver_result.get()
+            handle_move(move)
+        time.sleep(time_out)
+    print("Done illustrating")
+    solver_result.queue.clear()
+
+def start_ilustrating():
+    illustrate_thread = threading.Thread(target=illustrate_solution)
+    illustrate_thread.start() 
+
+
 
 # Initialize pygame
 pygame.init()
@@ -265,11 +304,10 @@ def create_buttons():
             font=font
         )
         buttons.append(button)
-
-
 def draw_buttons():
     for button in buttons:
         button.draw(screen)
+
 
 def handle_button_click(text):
     global state, level
@@ -287,16 +325,26 @@ def handle_button_click(text):
             reset_level()
             state = "playing"
     elif state == "solution":
-        if text == "DFS":
-            pass
-        elif text == "BFS":
-            pass
-        elif text == "UCS":
-            pass
-        elif text == "A*":
-            pass
-        elif text == "Restart":
+        if text == "Restart":
             state = "playing"
+        else: 
+            state = "solving"
+            reset_level(False)
+            start_solver(text)
+    elif state == "solving":
+        if text == "Restart":
+            reset_level()
+    elif state == "illustrating":
+        if text == "Pause":
+            state = "pausing"
+        elif text == "Restart":
+            reset_level()            
+    elif state == "pausing":
+        if text == "Resume":
+            state = "illustrating"
+        elif text == "Restart":
+            reset_level()
+
     elif state == "won":
         if text == "Levels":
             reset_level()
@@ -347,9 +395,10 @@ def check_won():
             return False
     return True
 
-def reset_level():
+def reset_level(p=True):
     global state
-    state = "playing"
+    if p == True:
+        state = "playing"
     read_grid(level)
     load_textures()
 
@@ -369,6 +418,13 @@ def game_loop():
             for button in buttons:
                 button.handle_event(event)
 
+        if state == "solving":
+            if not solver_result.empty():
+                state = "illustrating"
+                start_ilustrating()
+
+
+        
         create_buttons()
         draw_background()
         draw_board()
