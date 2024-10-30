@@ -15,16 +15,18 @@ pygame.display.set_caption("Sokoban Game with Textures")
 BG_COLOR = (230, 230, 230)
 BUTTON_COLOR = (100, 100, 250)
 TEXT_COLOR = (255, 255, 255)
-BUTTON_WIDTH, BUTTON_HEIGHT = 200, 140
+BUTTON_WIDTH, BUTTON_HEIGHT = 200, 100
 BUTTON_SPACING = 100
 
 # Define button labels for each game state
 button_texts = {
-    "playing": ["Menu", "Pause", "Restart"],
-    "menu": ["Play", "Levels", "Restart", "Solutions"],
-    "level_select": [f"Level {i+1}" for i in range(10)],
-    "solutions": ["DFS", "BFS", "UCS", "A*", "Restart"],
-    "solving": ["Menu", "Pause", "Restart"]
+    "playing": ["Levels", "Solution", "Restart"],
+    "selecting": [f"Level {i+1}" for i in range(10)],
+    "solution": ["DFS", "BFS", "UCS", "A*", "Restart"],
+    "solving": ["Restart"],
+    "illustrating": ["Pause", "Restart"],
+    "pausing": ["Resume", "Restart"],
+    "won": ["Levels", "Restart"]
 }
 
 
@@ -38,7 +40,8 @@ TEXTURE_PATHS = {
     "switch": "textures/grid/orb.png",
     "ares_on_switch": "textures/grid/ares2.png",
     "stone_on_switch": "textures/grid/light_crate.png",
-    "background": "textures/UI/back_ground.jpg"
+    "background": "textures/UI/back_ground.jpg",
+    "board": "textures/UI/toasts.png"
 }
 
 # Loaded textures
@@ -46,15 +49,64 @@ textures = {key: None for key in TEXTURE_PATHS.keys()}
 
 # Game logic variables
 level = 1
-state = "playing"  # Can be 'playing', 'menu', 'level_select', 'solutions', 'solving'
+state = "playing"
 grid_width, grid_height = 10, 8  # Example grid size
 cell_size = 0  # Size of each cell in the grid
 stones = []
 ares = []
 switches = []
 walls = []
+step_count = [0]
+weght_pushed = [0]
 #
 font = pygame.font.Font("textures/MinecraftBold-nMK1.otf", 36)
+
+
+class Button:
+    def __init__(self, text, pos, size, texture, hover_tint=(30, 30, 30), click_tint=(-50, -50, -50), font=None):
+        self.text = text
+        self.pos = pos
+        self.size = size
+        self.texture = pygame.transform.scale(texture["button"], size)  # Scale texture to button size
+        self.hover_tint = hover_tint
+        self.click_tint = click_tint
+        self.font = font or pygame.font.Font(None, 30)
+        self.rect = pygame.Rect(pos, size)
+        self.clicked = False
+
+    def apply_tint(self, tint):
+        """Apply tint to texture."""
+        tinted_surface = self.texture.copy()
+        overlay = pygame.Surface(self.size, pygame.SRCALPHA)
+        overlay.fill((*tint, 100))  # 100 is the alpha for transparency
+        tinted_surface.blit(overlay, (0, 0), special_flags=pygame.BLEND_RGBA_ADD)
+        return tinted_surface
+
+    def draw(self, screen):
+        # Determine which tint to apply
+        if self.clicked:
+            button_image = self.apply_tint(self.click_tint)
+        elif self.rect.collidepoint(pygame.mouse.get_pos()):
+            button_image = self.apply_tint(self.hover_tint)
+        else:
+            button_image = self.texture
+
+        # Draw the button texture (with tint if applied)
+        screen.blit(button_image, self.pos)
+
+        # Render and draw text
+        text_surface = self.font.render(self.text, True, (255, 255, 255))
+        text_rect = text_surface.get_rect(center=self.rect.center)
+        screen.blit(text_surface, text_rect)
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(event.pos):
+                self.clicked = True  # Button is being clicked
+        elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            if self.rect.collidepoint(event.pos):
+                handle_button_click(self.text)
+            self.clicked = False  # Reset click state
 
 def read_grid(level):
     global grid_width, grid_height, cell_size
@@ -63,6 +115,8 @@ def read_grid(level):
     switches.clear()
     walls.clear()
     ares.clear()
+    step_count[0] = 0
+    weght_pushed[0] = 0
     if level < 10:
         level_str = "0" + level.__str__()
     with open(f"inputs/input-{level_str}.txt", "r") as file:
@@ -73,7 +127,6 @@ def read_grid(level):
         grid_height = 0
 
         for y, line in enumerate(file):
-            print(line)
             grid_height += 1
             grid_width = max(grid_width, len(line) - 1)
             for x, char in enumerate(line):
@@ -86,29 +139,7 @@ def read_grid(level):
                 if char == '@' or char == '+':
                     ares.append((x, y))
     cell_size = min((SCREEN_WIDTH - UI_WIDTH) // (grid_width), SCREEN_HEIGHT // (grid_height))
-    print(stones)
 
-class Button:
-    def __init__(self, text, x, y, width, height, color, action=None):
-        self.text = text
-        self.rect = pygame.Rect(x, y, width, height)
-        self.color = color
-        self.action = action  # Function or method to call when clicked
-
-    def draw(self, screen):
-        # Draw button texture if available, otherwise draw a colored rectangle
-        if textures["button"]:
-            screen.blit(textures["button"], self.rect)
-        else:
-            pygame.draw.rect(screen, self.color, self.rect)
-        
-        # Draw button text
-        text_surface = font.render(self.text, True, TEXT_COLOR)
-        text_rect = text_surface.get_rect(center=self.rect.center)
-        screen.blit(text_surface, text_rect)
-
-    def is_clicked(self, pos):
-        return self.rect.collidepoint(pos)
 
 def load_textures():
     for texture_name, texture_path in TEXTURE_PATHS.items():
@@ -126,31 +157,14 @@ def load_textures():
         backgroud = pygame.image.load(TEXTURE_PATHS["background"])
         textures["background"] = pygame.transform.scale(backgroud, (SCREEN_WIDTH*2, SCREEN_HEIGHT*2))
 
-    if textures["button"]:
-        button = pygame.image.load(TEXTURE_PATHS["button"])
-        textures["button"] = pygame.transform.scale(button, (BUTTON_WIDTH, BUTTON_HEIGHT))
 
-    print("Textures loaded successfully.")
+    if textures["board"]:
+        board = pygame.image.load(TEXTURE_PATHS["board"])
+        textures["board"] = pygame.transform.scale(board, (UI_WIDTH, UI_WIDTH))
     
 
 buttons = []
 
-def create_buttons():
-    buttons.clear()
-    button_set = button_texts[state]
-    ui_x = SCREEN_WIDTH - UI_WIDTH
-    button_x = ui_x + (UI_WIDTH - BUTTON_WIDTH)//2
-    button_y = 20
-
-    for text in button_set:
-        action = lambda txt=text: handle_button_click(txt)
-        button = Button(text, button_x, button_y, BUTTON_WIDTH, BUTTON_HEIGHT, BUTTON_COLOR, action)
-        buttons.append(button)
-        button_y += BUTTON_SPACING
-
-def draw_buttons():
-    for button in buttons:
-        button.draw(screen)
 
 # Draw game grid on the left side of the screen
 def draw_grid():
@@ -207,46 +221,90 @@ def draw_background():
         # Fallback to a solid color if no background image is loaded
         screen.fill(BG_COLOR)
 
+def draw_board():
+    board = textures["board"]
+    text1 = font.render(f"Level {level}", True, TEXT_COLOR)
+    text2 = font.render(state.upper(), True, TEXT_COLOR)
+    text3 = font.render(f"Steps: {step_count[0]}", True, TEXT_COLOR)
+    text4 = font.render(f"Weight: {weght_pushed[0]}", True, TEXT_COLOR)
+    screen.blit(board, (SCREEN_WIDTH - UI_WIDTH, 0))
+    screen.blit(text1, (SCREEN_WIDTH - UI_WIDTH + 30, 10 + text1.get_height()//2))
+    screen.blit(text2, (SCREEN_WIDTH - UI_WIDTH + 30, 50 + text2.get_height()//2))
+    screen.blit(text3, (SCREEN_WIDTH - UI_WIDTH + 30, 100 + text3.get_height()//2))
+    screen.blit(text4, (SCREEN_WIDTH - UI_WIDTH + 30, 150 + text4.get_height()//2))
 
+def create_buttons():
+    global buttons
+    buttons.clear()
+    if state == "selecting":
+        for i, text in enumerate(button_texts[state]):
+            if i % 2 == 0:
+                button = Button(
+                    text,
+                    (SCREEN_WIDTH - UI_WIDTH//2 - BUTTON_WIDTH//2 - BUTTON_SPACING, UI_WIDTH + i//2 * (BUTTON_SPACING)),
+                    (BUTTON_WIDTH, BUTTON_HEIGHT),
+                    textures,
+                    font=font
+                )
+            else:
+                button = Button(
+                    text,
+                    (SCREEN_WIDTH - UI_WIDTH//2 - BUTTON_WIDTH//2 + BUTTON_SPACING, UI_WIDTH + i//2 * (BUTTON_SPACING)),
+                    (BUTTON_WIDTH, BUTTON_HEIGHT),
+                    textures,
+                    font=font
+                )
+            buttons.append(button)
+        return
+    for i, text in enumerate(button_texts[state]):
+        button = Button(
+            text,
+            (SCREEN_WIDTH - UI_WIDTH// 2 - BUTTON_WIDTH//2, UI_WIDTH + i * (BUTTON_SPACING)),
+            (BUTTON_WIDTH, BUTTON_HEIGHT),
+            textures,
+            font=font
+        )
+        buttons.append(button)
+
+
+def draw_buttons():
+    for button in buttons:
+        button.draw(screen)
+
+def handle_button_click(text):
+    global state, level
+    print(f"Button clicked: {text}")
+    if state == "playing":
+        if text == "Levels":
+            state = "selecting"
+        elif text == "Solution":
+            state = "solution"
+        elif text == "Restart":
+            reset_level()
+    elif state == "selecting":
+        if text.startswith("Level"):
+            level = int(text.split(" ")[1])
+            reset_level()
+            state = "playing"
+    elif state == "solution":
+        if text == "DFS":
+            pass
+        elif text == "BFS":
+            pass
+        elif text == "UCS":
+            pass
+        elif text == "A*":
+            pass
+        elif text == "Restart":
+            state = "playing"
+    elif state == "won":
+        if text == "Levels":
+            reset_level()
+            state = "selecting"
+        elif text == "Restart":
+            reset_level()
 
 # Game state handling
-def handle_button_click(button_text):
-    global state, level
-    if state == "playing":
-        if button_text == "Menu":
-            state = "menu"
-        elif button_text == "Pause":
-            state = "paused"
-        elif button_text == "Restart":
-            reset_level()
-    elif state == "menu":
-        if button_text == "Play":
-            state = "playing"
-        elif button_text == "Levels":
-            state = "level_select"
-        elif button_text == "Restart":
-            reset_level()
-        elif button_text == "Solutions":
-            state = "solutions"
-    elif state == "level_select":
-        if button_text.startswith("Level"):
-            level = int(button_text.split()[1])
-            reset_level()
-            state = "playing"
-    elif state == "solutions":
-        if button_text in ["DFS", "BFS", "UCS", "A*"]:
-            state = "solving"
-        elif button_text == "Restart":
-            reset_level()
-    elif state == "solving":
-        if button_text == "Menu":
-            state = "menu"
-        elif button_text == "Pause":
-            state = "paused"
-        elif button_text == "Restart":
-            reset_level()
-    create_buttons()  # Update buttons whenever state changes
-
 def handle_move(direction):
     global ares, stones
     direction.lower()
@@ -273,8 +331,21 @@ def handle_move(direction):
                 if stones[j][0] == obj_x + dx and stones[j][1] == obj_y + dy:
                     return
             stones[i] = (obj_x + dx, obj_y + dy, stones[i][2])
+            weght_pushed[0] += int(stones[i][2])
             break
+    step_count[0] += 1
     ares = [(obj_x, obj_y)]
+
+def check_won():
+    for (x, y) in switches:
+        flag = False
+        for (sx, sy, _) in stones:
+            if x == sx and y == sy:
+                flag = True
+                continue
+        if not flag:
+            return False
+    return True
 
 def reset_level():
     global state
@@ -283,25 +354,26 @@ def reset_level():
     load_textures()
 
 def game_loop():
-    global running
-    create_buttons()
+    global running, state
     running = True
 
     while running:
+        if(check_won()):
+            state = "won"
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                for button in buttons:
-                    if button.is_clicked(pos):
-                        button.action()
-                        break
             elif event.type == pygame.KEYDOWN:
                 handle_key(event.key)
+
+            for button in buttons:
+                button.handle_event(event)
+
+        create_buttons()
         draw_background()
-        draw_grid()
+        draw_board()
         draw_buttons()
+        draw_grid()
         pygame.time.Clock().tick(60)
         pygame.display.flip()
         
