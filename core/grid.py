@@ -214,16 +214,45 @@ class Grid:
         new_row, new_col = row + delta_row, col + delta_col
 
         # Check if the new stone position is valid
-        # If the new position is not wall or stone then move the stone
-        if self.is_valid_position(new_row, new_col) and not self.is_stone(
-            new_row, new_col
-        ):
+        # If the new position is not wall or stone and not a deadlock then move the stone 
+        if self.is_valid_position(new_row, new_col) and not self.is_stone(new_row, new_col) and not self.is_deadlock(new_row, new_col):
             # Move the stone to the new position
             # if update:
             weight[0] += self.update_stone_position((row, col), (new_row, new_col))
             return True
 
         return False
+    
+    def is_deadlock(self, row, col):
+        """
+        Check if a stone is in a deadlock position.
+
+        :param row: Row index of the stone.
+        :param col: Column index of the stone.
+        """
+        # The stone is in a deadlock position if 
+        # - It is surrounded by walls on three sides and not on a switch
+        # - It is surrounded by walls on two consecutive sides and not on a switch
+        if self.grid[row][col] == GridConstants.SWITCH:
+            return False
+
+        # Calculate the directions in which the stone is surrounded by walls
+        directions_surrounded_by_walls = []
+        for delta_row, delta_col in MOVEMENTS.values():
+            new_row, new_col = row + delta_row, col + delta_col
+            if self.grid[new_row][new_col] == GridConstants.WALL:
+                directions_surrounded_by_walls.append((delta_row, delta_col))
+
+        if len(directions_surrounded_by_walls) >= 3:
+            return True
+        
+        if len(directions_surrounded_by_walls) < 2:
+            return False
+        
+        # Check if the stone is surrounded by walls on two consecutive sides
+        if (directions_surrounded_by_walls[0][0] + directions_surrounded_by_walls[1][0] == 0) and (directions_surrounded_by_walls[0][1] + directions_surrounded_by_walls[1][1] == 0):
+            return False
+        return True
 
     def update_ares_position(self, new_row, new_col):
         """
