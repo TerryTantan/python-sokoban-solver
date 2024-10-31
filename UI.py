@@ -158,6 +158,9 @@ def read_grid(level):
     weght_pushed[0] = 0
     if level < 10:
         level_str = "0" + level.__str__()
+    else:
+        level_str = level.__str__()
+        
     with open(f"inputs/input-{level_str}.txt", "r") as file:
         line = file.readline().split(' ')
         line[-1] = line[-1].split('\n')[0]
