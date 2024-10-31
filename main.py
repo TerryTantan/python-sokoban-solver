@@ -1,13 +1,24 @@
 from solver import Solver
 
-def run_algorithm(algorithm, input_file, output_file):
-    print("Running algorithm:", algorithm)
-    solver = Solver(algorithm, input_file, output_file)
-    solver.run()
-
 if __name__ == "__main__":
-    input = "inputs/input-10.txt"
-    run_algorithm("DFS", input, "outputs/output-01.txt")
-    run_algorithm("BFS", input, "outputs/output-02.txt")
-    run_algorithm("UCS", input, "outputs/output-03.txt")
-    run_algorithm("A*", input, "outputs/output-04.txt")
+    # Parse arguments or input for algorithm choice and file paths
+    algorithms = ["DFS", "BFS", "UCS", "A*"]
+
+    for i in range(1, 11):  # Loop from input-01 to input-10
+        for algorithm in algorithms:
+            if (algorithm == "DFS" or algorithm == "BFS") and i > 5:
+                continue
+            _algorithm = algorithm
+            if algorithm == "A*":
+                _algorithm = "AStar"
+            input_file = f"inputs/input-{i:02d}.txt"  # Format to input-01, input-02, ..., input-08
+            output_file = f"outputs/{_algorithm}/output{_algorithm}New-{i:02d}.txt"  # Format to outputAlgorithmNameNew-number.txt
+
+            solver = Solver(algorithm, input_file, output_file)
+            solver.run()
+
+    # Run BFS on test 2
+    # input_file = "inputs/input-03.txt"
+    # output_file = "outputs/BFS/outputBFSNew-03.txt"
+    # solver = Solver("BFS", input_file, output_file)
+    # solver.run()
