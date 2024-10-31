@@ -1,28 +1,13 @@
 from solver import Solver
 
-if __name__ == "__main__":
-    # Parse arguments or input for algorithm choice and file paths
-    # algorithm = "DFS"  # Example, use argument parsing to select this dynamically
-    # input_file = "inputs/input-04.txt"
-    # output_file = "outputs/output-01.txt"
-
-    # solver = Solver(algorithm, input_file, output_file)
-    # solver.run()
-
-    algorithm = "BFS"  # Example, use argument parsing to select this dynamically
-    input_file = "inputs/input-03.txt"
-    output_file = "outputs/outputBFSNew-03.txt"
+def run_algorithm(algorithm, input_file, output_file):
+    print("Running algorithm:", algorithm)
     solver = Solver(algorithm, input_file, output_file)
     solver.run()
 
-    # algorithm = "UCS"  # Example, use argument parsing to select this dynamically
-    # # input_file = "inputs/input-00.txt"
-    # output_file = "outputs/output-03.txt"
-    # solver = Solver(algorithm, input_file, output_file)
-    # solver.run()
-
-    # algorithm = "A*"  # Example, use argument parsing to select this dynamically
-    # # input_file = "inputs/input-00.txt"
-    # output_file = "outputs/output-04.txt"
-    # solver = Solver(algorithm, input_file, output_file)
-    # solver.run()
+if __name__ == "__main__":
+    input = "inputs/input-10.txt"
+    run_algorithm("DFS", input, "outputs/output-01.txt")
+    run_algorithm("BFS", input, "outputs/output-02.txt")
+    run_algorithm("UCS", input, "outputs/output-03.txt")
+    run_algorithm("A*", input, "outputs/output-04.txt")
