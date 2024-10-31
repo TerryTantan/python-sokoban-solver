@@ -10,8 +10,8 @@ if __name__ == "__main__":
     # solver.run()
 
     algorithm = "BFS"  # Example, use argument parsing to select this dynamically
-    input_file = "inputs/input-02.txt"
-    output_file = "outputs/outputBFSNew-02.txt"
+    input_file = "inputs/input-03.txt"
+    output_file = "outputs/outputBFSNew-03.txt"
     solver = Solver(algorithm, input_file, output_file)
     solver.run()
 

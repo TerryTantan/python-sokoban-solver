@@ -43,9 +43,10 @@ class BaseSearch(ABC):
     def search(self) -> bool:
         init_node = Node(
             position=self.grid.ares_position,
-            stones=[
-                (row, col, weight) for (row, col), weight in self.grid.stones.items()
-            ],
+            stones=sorted(
+                [(row, col, weight) for (row, col), weight in self.grid.stones.items()],
+                key=lambda x: (x[0], x[1]),  # Sort by row, then by column
+            ),
         )
         self.next_node_data_structure.add(init_node)
 
@@ -114,10 +115,13 @@ class BaseSearch(ABC):
         # Create new node
         new_node = Node(
             position=self.grid.ares_position,
-            stones=[
-                (row, col, weight)
-                for (row, col), weight in self.grid.current_stones.items()
-            ],
+            stones=sorted(
+                [
+                    (row, col, weight)
+                    for (row, col), weight in self.grid.current_stones.items()
+                ],
+                key=lambda x: (x[0], x[1]),  # Sort by row, then by column
+            ),
             parent=node,
             action=action,
             weight=node.weight + self.weight[0] - prev_weight,
