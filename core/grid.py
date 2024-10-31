@@ -61,9 +61,9 @@ class Grid:
         self.stones = sorted(self.stones, key=lambda x: (x[0], x[1]))
 
         # Combine the stones with their weights
-        self.stones = [
-            (row, col, weight) for (row, col), weight in zip(self.stones, self.weights)
-        ]
+        self.stones = {
+            (row, col): weight for (row, col), weight in zip(self.stones, self.weights)
+        }
 
         self.current_stones = deepcopy(self.stones)
 
@@ -146,7 +146,9 @@ class Grid:
             if self.is_stone(new_row, new_col):
                 # Try to push the stone
                 if self.push_stone(new_row, new_col, delta_row, delta_col, weight):
-                    pushCost = self.get_stone_weight(new_row + delta_row, new_col + delta_col)
+                    pushCost = self.get_stone_weight(
+                        new_row + delta_row, new_col + delta_col
+                    )
                     self.update_ares_position(new_row, new_col)
                     return direction, pushCost
                 return None, 0
@@ -156,12 +158,12 @@ class Grid:
                 return direction.lower(), 0
 
         return None, None
-    
+
     def get_stone_weight(self, row, col):
-        for (r, c, weight) in self.current_stones:
-            if r == row and c == col:
-                return weight
-        return 0
+        """Get the weight of a stone at the specified (row, col) position."""
+        return self.current_stones.get(
+            (row, col), 0
+        )  # Returns 0 if (row, col) is not found
 
     def is_stone(self, row, col):
         """
@@ -214,15 +216,19 @@ class Grid:
         new_row, new_col = row + delta_row, col + delta_col
 
         # Check if the new stone position is valid
-        # If the new position is not wall or stone and not a deadlock then move the stone 
-        if self.is_valid_position(new_row, new_col) and not self.is_stone(new_row, new_col) and not self.is_deadlock(new_row, new_col):
+        # If the new position is not wall or stone and not a deadlock then move the stone
+        if (
+            self.is_valid_position(new_row, new_col)
+            and not self.is_deadlock(new_row, new_col)
+            and not self.is_stone(new_row, new_col)
+        ):
             # Move the stone to the new position
             # if update:
             weight[0] += self.update_stone_position((row, col), (new_row, new_col))
             return True
 
         return False
-    
+
     def is_deadlock(self, row, col):
         """
         Check if a stone is in a deadlock position.
@@ -230,7 +236,7 @@ class Grid:
         :param row: Row index of the stone.
         :param col: Column index of the stone.
         """
-        # The stone is in a deadlock position if 
+        # The stone is in a deadlock position if
         # - It is surrounded by walls on three sides and not on a switch
         # - It is surrounded by walls on two consecutive sides and not on a switch
         if self.grid[row][col] == GridConstants.SWITCH:
@@ -245,12 +251,18 @@ class Grid:
 
         if len(directions_surrounded_by_walls) >= 3:
             return True
-        
+
         if len(directions_surrounded_by_walls) < 2:
             return False
-        
+
         # Check if the stone is surrounded by walls on two consecutive sides
-        if (directions_surrounded_by_walls[0][0] + directions_surrounded_by_walls[1][0] == 0) and (directions_surrounded_by_walls[0][1] + directions_surrounded_by_walls[1][1] == 0):
+        if (
+            directions_surrounded_by_walls[0][0] + directions_surrounded_by_walls[1][0]
+            == 0
+        ) and (
+            directions_surrounded_by_walls[0][1] + directions_surrounded_by_walls[1][1]
+            == 0
+        ):
             return False
         return True
 
@@ -283,12 +295,12 @@ class Grid:
 
         :param old_pos: Tuple (row, col) of the current stone position.
         :param new_pos: Tuple (row, col) of the new stone position.
+        :return: The weight of the moved stone.
         """
         old_row, old_col = old_pos
         new_row, new_col = new_pos
 
         # Update the grid with the stone's new position
-
         # Update the character on the old position of the stone
         if self.grid[old_row][old_col] == GridConstants.STONE_ON_SWITCH:
             self.grid[old_row][old_col] = GridConstants.SWITCH
@@ -301,11 +313,11 @@ class Grid:
         else:
             self.grid[new_row][new_col] = GridConstants.STONE
 
-        # Update the stone's position in the list of stones
-        for idx, (row, col, weight) in enumerate(self.current_stones):
-            if (row, col) == (old_row, old_col):
-                self.current_stones[idx] = (new_row, new_col, weight)
-                return weight
+        # Retrieve and update the stone's weight in the dictionary
+        weight = self.current_stones.pop(old_pos, 0)  # Remove the old position
+        self.current_stones[new_pos] = weight  # Add the new position
+
+        return weight
 
     def is_goal(self):
         """
@@ -323,7 +335,9 @@ class Grid:
                 return False
         return True
 
-    def reset_grid(self, new_ares_position, new_stones_positions):
+    def reset_grid(
+        self, new_ares_position, new_stones_positions: list[tuple[int, int, int]]
+    ):
         """
         Reset the grid to the initial state with the specified Ares position and stone positions.
 
@@ -332,14 +346,32 @@ class Grid:
             new_stones_positions (list of tuple(row, col, weight)): The new positions of the stones.
         """
         # Reset all position to free space, except walls and switches
-        for row_idx, row in enumerate(self.grid):
-            for col_idx, cell in enumerate(row):
-                if cell not in [GridConstants.WALL]:
-                    self.grid[row_idx][col_idx] = GridConstants.FREE_SPACE
+        # for row_idx, row in enumerate(self.grid):
+        #     for col_idx, cell in enumerate(row):
+        #         if cell not in [GridConstants.WALL]:
+        #             self.grid[row_idx][col_idx] = GridConstants.FREE_SPACE
 
-        # Set all switch positions to normal switch
-        for row, col in self.switches:
-            self.grid[row][col] = GridConstants.SWITCH
+        # # Set all switch positions to normal switch
+        # for row, col in self.switches:
+        #     self.grid[row][col] = GridConstants.SWITCH
+
+        # 1. Reset previous Ares position
+        if self.ares_position:
+            row, col = self.ares_position
+            self.grid[row][col] = (
+                GridConstants.SWITCH
+                if (row, col) in self.switches
+                else GridConstants.FREE_SPACE
+            )
+
+        # 2. Reset previous stones positions
+        if self.current_stones:
+            for (row, col), weight in self.current_stones.items():
+                self.grid[row][col] = (
+                    GridConstants.SWITCH
+                    if (row, col) in self.switches
+                    else GridConstants.FREE_SPACE
+                )
 
         # Update the new Ares position
         # If Ares is on a switch, update the switch character
@@ -361,7 +393,10 @@ class Grid:
             else:
                 self.grid[new_row][new_col] = GridConstants.STONE
 
-        self.current_stones = deepcopy(new_stones_positions)
+        # self.current_stones = deepcopy(new_stones_positions)
+        self.current_stones = {
+            (row, col): weight for row, col, weight in new_stones_positions
+        }
         self.ares_position = deepcopy(new_ares_position)
 
     def copy(self):
