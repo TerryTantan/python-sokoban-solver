@@ -41,6 +41,7 @@ class BaseSearch(ABC):
         self.start_time = time.perf_counter()
 
     def search(self) -> bool:
+        # print("Len before search: " + str(len(self.next_node_data_structure)))
         init_node = Node(
             position=self.grid.ares_position,
             stones=sorted(

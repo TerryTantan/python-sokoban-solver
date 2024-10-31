@@ -219,8 +219,8 @@ class Grid:
         # If the new position is not wall or stone and not a deadlock then move the stone
         if (
             self.is_valid_position(new_row, new_col)
-            and not self.is_deadlock(new_row, new_col)
             and not self.is_stone(new_row, new_col)
+            and not self.is_deadlock(new_row, new_col)
         ):
             # Move the stone to the new position
             # if update:
@@ -336,7 +336,9 @@ class Grid:
         return True
 
     def reset_grid(
-        self, new_ares_position, new_stones_positions: list[tuple[int, int, int]]
+        self,
+        new_ares_position: tuple[int, int],
+        new_stones_positions: list[tuple[int, int, int]],
     ):
         """
         Reset the grid to the initial state with the specified Ares position and stone positions.

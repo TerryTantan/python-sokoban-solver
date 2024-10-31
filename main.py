@@ -2,27 +2,23 @@ from solver import Solver
 
 if __name__ == "__main__":
     # Parse arguments or input for algorithm choice and file paths
-    # algorithm = "DFS"  # Example, use argument parsing to select this dynamically
-    # input_file = "inputs/input-04.txt"
-    # output_file = "outputs/output-01.txt"
+    algorithms = ["DFS", "BFS", "UCS", "A*"]
 
-    # solver = Solver(algorithm, input_file, output_file)
-    # solver.run()
+    for i in range(1, 11):  # Loop from input-01 to input-10
+        for algorithm in algorithms:
+            if (algorithm == "DFS" or algorithm == "BFS") and i > 5:
+                continue
+            _algorithm = algorithm
+            if algorithm == "A*":
+                _algorithm = "AStar"
+            input_file = f"inputs/input-{i:02d}.txt"  # Format to input-01, input-02, ..., input-08
+            output_file = f"outputs/{_algorithm}/output{_algorithm}New-{i:02d}.txt"  # Format to outputAlgorithmNameNew-number.txt
 
-    algorithm = "BFS"  # Example, use argument parsing to select this dynamically
-    input_file = "inputs/input-03.txt"
-    output_file = "outputs/outputBFSNew-03.txt"
-    solver = Solver(algorithm, input_file, output_file)
-    solver.run()
+            solver = Solver(algorithm, input_file, output_file)
+            solver.run()
 
-    # algorithm = "UCS"  # Example, use argument parsing to select this dynamically
-    # # input_file = "inputs/input-00.txt"
-    # output_file = "outputs/output-03.txt"
-    # solver = Solver(algorithm, input_file, output_file)
-    # solver.run()
-
-    # algorithm = "A*"  # Example, use argument parsing to select this dynamically
-    # # input_file = "inputs/input-00.txt"
-    # output_file = "outputs/output-04.txt"
-    # solver = Solver(algorithm, input_file, output_file)
+    # Run BFS on test 2
+    # input_file = "inputs/input-03.txt"
+    # output_file = "outputs/BFS/outputBFSNew-03.txt"
+    # solver = Solver("BFS", input_file, output_file)
     # solver.run()
