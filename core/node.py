@@ -38,7 +38,7 @@ class Node:
         self.position = deepcopy(position)
         self.stones = deepcopy(stones)
         self.parent = parent
-        self.action = deepcopy(action)
+        self.action = action
         self.g_cost = g_cost
         self.h_cost = h_cost
         self.weight = weight
@@ -67,7 +67,7 @@ class Node:
 
     def __str__(self) -> str:
         return f"Node: {self.position}, Stones: {self.stones}, Cost: {self.total_cost()}, Action: {self.action}"
-    
+
     def __lt__(self, other):
         """Return True if the data structure is less than the other data structure."""
         return True

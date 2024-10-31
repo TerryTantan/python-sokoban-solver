@@ -41,7 +41,12 @@ class BaseSearch(ABC):
         self.start_time = time.perf_counter()
 
     def search(self) -> bool:
-        init_node = Node(self.grid.ares_position, self.grid.stones)
+        init_node = Node(
+            position=self.grid.ares_position,
+            stones=[
+                (row, col, weight) for (row, col), weight in self.grid.stones.items()
+            ],
+        )
         self.next_node_data_structure.add(init_node)
 
         flag = False
@@ -108,13 +113,16 @@ class BaseSearch(ABC):
 
         # Create new node
         new_node = Node(
-                position=self.grid.ares_position,
-                stones=self.grid.current_stones,
-                parent=node,
-                action=action,
-                weight=node.weight + self.weight[0] - prev_weight,
+            position=self.grid.ares_position,
+            stones=[
+                (row, col, weight)
+                for (row, col), weight in self.grid.current_stones.items()
+            ],
+            parent=node,
+            action=action,
+            weight=node.weight + self.weight[0] - prev_weight,
         )
-        
+
         new_node.g_cost = self.calculate_g(new_node, push_cost)
         new_node.h_cost = self.calculate_h(new_node)
 
