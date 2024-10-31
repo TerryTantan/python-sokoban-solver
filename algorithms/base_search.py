@@ -154,6 +154,9 @@ class BaseSearch(ABC):
     def get_solution(self) -> Solution:
         return self.solution
 
+    def get_path(self) -> str:
+        return self.path
+
     @abstractmethod
     def calculate_g(self, node: Node, push_cost: int) -> int:
         """Calculate the cost from the start node to the current node."""

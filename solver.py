@@ -38,3 +38,4 @@ class Solver:
             self.io_handler.save_to_file(
                 self.algorithm_name + "\n" + str(algorithm.get_solution()),
             )
+        return algorithm.get_path()
