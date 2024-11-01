@@ -17,11 +17,11 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 ## How to Set up
 
 - Open your terminal.
-- Change directory to the project file.
+- Change directory to the project directory.
 - `python -m venv venv`
 - `venv\Scripts\activate`
 - `pip install -r requirements.txt`
-- `python sokoban_game_gui.py` for GUI game and `python sokoban_game_cli.py` for CLI version.
+- `python sokoban_game_gui.py` for GUI version and `python sokoban_game_cli.py` for CLI version.
 
 ## Directory Structure
 
@@ -34,7 +34,6 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 │   └── UCS/
 ├── resources/
 ├── sources/
-│   ├── _pycache_/
 │   ├── algorithms/
 │   ├── configs/
 │   ├── core/
