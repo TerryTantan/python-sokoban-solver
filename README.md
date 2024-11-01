@@ -11,7 +11,7 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 
 ## Requirements
 
-- **Python 3.x**
+- **Python 3.10**
 - **Pygame**: `pip install pygame`
 - **Solver**: A Python module (`solver.py`) that contains the `Solver` class for automatically solving levels.
 

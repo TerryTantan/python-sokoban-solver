@@ -360,6 +360,17 @@ def draw_solving():
     )
 
 
+def draw_won():
+    text = big_font.render("YOU WIN!", True, TEXT_COLOR)
+    screen.blit(
+        text,
+        (
+            SCREEN_WIDTH // 2 - text.get_width() // 2,
+            SCREEN_HEIGHT // 2 - text.get_height() // 2,
+        ),
+    )
+
+
 def draw_board():
     board = textures["board"]
     y_offset = 20
@@ -614,6 +625,8 @@ def game_loop():
             if not solver_result.empty():
                 state = "illustrating"
                 start_ilustrating()
+        if state == "won":
+            draw_won()
         pygame.time.Clock().tick(60)
         pygame.display.flip()
 
