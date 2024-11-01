@@ -16,9 +16,3 @@ if __name__ == "__main__":
 
             solver = Solver(algorithm, input_file, output_file)
             solver.run()
-
-    # Run BFS on test 2
-    # input_file = "inputs/input-03.txt"
-    # output_file = "outputs/BFS/outputBFSNew-03.txt"
-    # solver = Solver("BFS", input_file, output_file)
-    # solver.run()

@@ -21,30 +21,8 @@ class AStar(BaseSearch):
 
     def calculate_h(self, node) -> int:
         stones = node.stones
-        ares = node.position
         switches = self.grid.switches
-
-        # average_stone_weight = sum([stone[2] for stone in stones]) / len(stones)
-
-        # Heuristic: sum of (the distances between each stone and the closest switch) * weight of the stone
-        #          + sum of (the distances between the ares and the nearest stone that has not been on a switch yet)
-        #          + punishment for not pushing the stone
-
-        # # Calculate the distance between the ares and the nearest stone that has not been on a switch yet
         heuristic = 0
-        # ares_heuristic_min = None
-        # for row_stone, col_stone, _ in stones:
-        #     if (row_stone, col_stone) in switches:
-        #         continue
-
-        #     ares_heuristic = abs(row_stone - ares[0]) + abs(col_stone - ares[1])
-        #     if ares_heuristic_min is None or ares_heuristic < ares_heuristic_min:
-        #         ares_heuristic_min = ares_heuristic
-
-        # if ares_heuristic_min is not None:
-        #     heuristic = ares_heuristic_min
-
-        # heuristic *= average_stone_weight # Make the heuristic more accurate
 
         # Calculate the distance between each stone and the closest switch
         # Create cost matrix where rows represent stones and columns represent switches
