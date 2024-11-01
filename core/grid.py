@@ -19,7 +19,7 @@ class Grid:
         weights (list of int): The weights of each stone in the grid from top left to bottom right.
         grid (list of list of str): The 2D grid representing the game board.
         ares_position (tuple): The (row, col) position of Ares.
-        stones (list of tuple): List of positions of all stones in the grid. Each stone is represented by a tuple (row, col, weight).
+        stones (dict(tuple(int, int), int)): Dict of positions of all stones in the grid. Key is (row, col) and value is weight.
         switches (list of tuple): List of positions of all switches in the grid.
         walls (list of tuple): List of positions of all walls in the grid.
     """
