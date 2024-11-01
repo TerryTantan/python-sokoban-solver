@@ -8,6 +8,24 @@ from abc import ABC, abstractmethod
 
 
 class Solution:
+    """
+    Represents the result of a search algorithm in terms of steps, weight,
+    node count, execution time, memory usage, and the path to the goal.
+
+    Attributes:
+        steps (int): The number of steps taken to reach the goal.
+        weight (int): The total weight or cost of the path to the goal.
+        node_count (int): The total number of nodes visited during the search.
+        time (float): The execution time of the search algorithm in milliseconds.
+        memory (float): The peak memory usage of the search algorithm in MB.
+        path (str): The sequence of actions or moves taken to reach the goal state.
+
+    Methods:
+        __str__(): Returns a formatted string representation of the solution,
+                   including the steps, weight, node count, execution time,
+                   memory usage, and path.
+    """
+
     def __init__(
         self, steps: int, weight: int, node_count: int, time, memory: float, path: str
     ) -> None:
