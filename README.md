@@ -72,7 +72,3 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 3. **Choose Level**: Click "Levels" to select a level.
 4. **Get Solution**: Select "Solution" and choose an algorithm to solve the level.
 5. **Restart**: Click "Restart" at any point to reset the level.
-
-## Screenshots
-
-Add screenshots of gameplay, menus, and other UI elements here
