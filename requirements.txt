@@ -1,0 +1,10 @@
+intel-cmplr-lib-ur==2025.0.0
+intel-openmp==2025.0.0
+mkl==2025.0.0
+mkl_random==1.2.8
+numpy==1.26.4
+pygame==2.6.1
+scipy==1.14.1
+tbb==2022.0.0
+tcmlib==1.2.0
+umf==0.9.0

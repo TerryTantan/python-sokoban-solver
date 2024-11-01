@@ -1,4 +1,4 @@
-# Sokoban Game in Pygame
+# Sokoban Game
 
 This project is a Sokoban game created with **Pygame**. The game includes a UI with various game states, support for multiple levels, and a solver to automatically solve the levels. The UI is enhanced with textured buttons, and the game grid is rendered using textures for elements like walls, floor, stones, and switches.
 
@@ -12,25 +12,58 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 ## Requirements
 
 - **Python 3.10**
-- **Pygame**: `pip install pygame`
-- **Solver**: A Python module (`solver.py`) that contains the `Solver` class for automatically solving levels.
+- **Windows 10 or higher**
 
-## Game Assets
+## How to Set up
 
-Textures for various elements:
-- **Textures/UI**: Button, background, and board images
-- **Textures/Grid**: Textures for floor, wall, stones, switches, and character
+- Open your terminal.
+- Change directory to the project file.
+- `python -m venv venv`
+- `venv\Scripts\activate`
+- `pip install -r requirements.txt`
+- `python sokoban_game_gui.py` for GUI game and `python sokoban_game_cli.py` for CLI version.
 
 ## Directory Structure
 
-```
 ├── inputs/
-│   └── input-xx.txt      # Level input files
-├── textures/
-│   ├── UI/               # UI textures
-│   └── grid/             # Game grid textures
-└── solver.py             # Solver module
-```
+│   └── inputs/
+├── outputs/
+│   ├── AStar/
+│   ├── BFS/
+│   ├── DFS/
+│   └── UCS/
+├── resources/
+├── sources/
+│   ├── _pycache_/
+│   ├── algorithms/
+│   ├── configs/
+│   ├── core/
+│   ├── custom_io/
+│   ├── data_structures/
+│   └── solver.py
+├── .gitignore
+├── README.md
+├── requirements.txt
+├── sokoban_game_cli.py
+└── sokoban_game_gui.py
+
+- **inputs**: Contains game levels files for the Sokoban game.
+- **outputs**: Contains result files from different pathfinding algorithms:
++ **AStar**: Already generated output files from the A* pathfinding algorithm.
++ **BFS**: Already generated output files from Breadth-First Search algorithm.
++ **DFS**: Already generated output files from Depth-First Search algorithm.
++ **UCS**: Already generated output files from Uniform Cost Search algorithm.
+- **resources**: Contains game assets.
+- **sources**: Main source code directory containing:
++ **algorithms**: Implementation of various pathfinding/solving algorithms.
++ **configs**: Configuration files for game settings.
++ **core**: Core game logic and essential components.
++ **custom_io**: Input/output handling specific to your game.
++ **data_structures**: Custom data structures used in the game.
++ **solver**.py: Contains the main solving logic for the Sokoban puzzles.
+- **requirements.txt**: Lists all Python package dependencies needed to run the game.
+- **sokoban_game_cli.py**: Command-line interface version of the game.
+- **sokoban_game_gui.py**: Graphical user interface version of the game.
 
 ## How to Play
 
@@ -39,12 +72,6 @@ Textures for various elements:
 3. **Choose Level**: Click "Levels" to select a level.
 4. **Get Solution**: Select "Solution" and choose an algorithm to solve the level.
 5. **Restart**: Click "Restart" at any point to reset the level.
-
-## Code Overview
-
-- **`Button` Class**: Manages UI buttons, including hover and click effects.
-- **`game_loop()`**: Main game loop that handles events and rendering.
-- **Solver Integration**: Solver is run in a separate thread to avoid blocking the game loop. Results are processed in real-time for visual representation of the solution.
 
 ## Screenshots
 
