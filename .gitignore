@@ -162,7 +162,14 @@ cython_debug/
 #.idea/
 
 #inputs/
-outputs/
-input/
-output/
+outputs/output-01.txt
+outputs/output-02.txt
+outputs/output-03.txt
+outputs/output-04.txt
+outputs/output-05.txt
+outputs/output-06.txt
+outputs/output-07.txt
+outputs/output-08.txt
+outputs/output-09.txt
+outputs/output-10.txt
 solution/

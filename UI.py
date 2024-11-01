@@ -5,7 +5,7 @@ from solver import Solver
 import threading
 import queue
 
-time_out = 0.01
+time_out = 0.0001
 
 solver_result = queue.Queue()
 def solve_level(text):
@@ -99,6 +99,7 @@ step_count = [0]
 weght_pushed = [0]
 #
 font = pygame.font.Font("textures/MinecraftBold-nMK1.otf", 36)
+big_font = pygame.font.Font("textures/MinecraftBold-nMK1.otf", 120)
 
 
 class Button:
@@ -158,9 +159,8 @@ def read_grid(level):
     weght_pushed[0] = 0
     if level < 10:
         level_str = "0" + level.__str__()
-    else:
+    else :
         level_str = level.__str__()
-        
     with open(f"inputs/input-{level_str}.txt", "r") as file:
         line = file.readline().split(' ')
         line[-1] = line[-1].split('\n')[0]
@@ -262,6 +262,10 @@ def draw_background():
     else:
         # Fallback to a solid color if no background image is loaded
         screen.fill(BG_COLOR)
+
+def draw_solving():
+    text = big_font.render("SOLVING...", True, TEXT_COLOR)
+    screen.blit(text, (SCREEN_WIDTH//2 - text.get_width()//2, SCREEN_HEIGHT//2 - text.get_height()//2))
 
 def draw_board():
     board = textures["board"]
@@ -422,6 +426,7 @@ def game_loop():
                 button.handle_event(event)
 
         if state == "solving":
+            draw_solving()
             if not solver_result.empty():
                 state = "illustrating"
                 start_ilustrating()
@@ -433,6 +438,11 @@ def game_loop():
         draw_board()
         draw_buttons()
         draw_grid()
+        if state == "solving":
+            draw_solving()
+            if not solver_result.empty():
+                state = "illustrating"
+                start_ilustrating()
         pygame.time.Clock().tick(60)
         pygame.display.flip()
         
