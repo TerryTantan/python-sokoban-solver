@@ -5,7 +5,7 @@ from solver import Solver
 import threading
 import queue
 
-time_out = 0.0001
+time_out = 0.1
 
 solver_result = queue.Queue()
 def solve_level(text):
@@ -267,6 +267,10 @@ def draw_solving():
     text = big_font.render("SOLVING...", True, TEXT_COLOR)
     screen.blit(text, (SCREEN_WIDTH//2 - text.get_width()//2, SCREEN_HEIGHT//2 - text.get_height()//2))
 
+def draw_won():
+    text = big_font.render("YOU WIN!", True, TEXT_COLOR)
+    screen.blit(text, (SCREEN_WIDTH//2 - text.get_width()//2, SCREEN_HEIGHT//2 - text.get_height()//2))
+
 def draw_board():
     board = textures["board"]
     text1 = font.render(f"Level {level}", True, TEXT_COLOR)
@@ -443,6 +447,8 @@ def game_loop():
             if not solver_result.empty():
                 state = "illustrating"
                 start_ilustrating()
+        if state == "won":
+            draw_won()
         pygame.time.Clock().tick(60)
         pygame.display.flip()
         
