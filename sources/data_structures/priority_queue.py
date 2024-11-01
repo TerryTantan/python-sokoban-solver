@@ -1,5 +1,5 @@
-from data_structures.base_data_structure import BaseDataStructure
-from core.node import Node
+from .base_data_structure import BaseDataStructure
+from ..core.node import Node
 import heapq
 
 

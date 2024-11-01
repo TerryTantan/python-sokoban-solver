@@ -1,7 +1,7 @@
-from algorithms.base_search import BaseSearch
-from data_structures.priority_queue import PriorityQueue
-from core.grid import Grid
-from core.node import Node
+from .base_search import BaseSearch
+from ..data_structures.priority_queue import PriorityQueue
+from ..core.grid import Grid
+from ..core.node import Node
 from scipy.optimize import linear_sum_assignment
 import numpy as np
 

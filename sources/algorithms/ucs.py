@@ -1,6 +1,6 @@
-from algorithms.base_search import BaseSearch
-from data_structures.priority_queue import PriorityQueue
-from core.grid import Grid
+from .base_search import BaseSearch
+from ..data_structures.priority_queue import PriorityQueue
+from ..core.grid import Grid
 
 
 class UCS(BaseSearch):

@@ -1,10 +1,10 @@
-from custom_io.input_output_handler import InputOutputHandler as IOHandler
-from algorithms.dfs import DFS
-from algorithms.bfs import BFS
-from algorithms.ucs import UCS
-from algorithms.a_star import AStar
-from algorithms.base_search import BaseSearch, Solution
-from core.grid import Grid
+from .custom_io.input_output_handler import InputOutputHandler as IOHandler
+from .algorithms.dfs import DFS
+from .algorithms.bfs import BFS
+from .algorithms.ucs import UCS
+from .algorithms.a_star import AStar
+from .algorithms.base_search import BaseSearch, Solution
+from .core.grid import Grid
 
 
 class Solver:

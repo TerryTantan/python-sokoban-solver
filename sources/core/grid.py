@@ -1,8 +1,5 @@
 from copy import deepcopy
-from configs.constants import MOVE_CHARS, MOVEMENTS, PUSH_CHARS, GridConstants
-
-
-"""STATUS: Completed"""
+from ..configs.constants import MOVE_CHARS, MOVEMENTS, PUSH_CHARS, GridConstants
 
 
 class Grid:

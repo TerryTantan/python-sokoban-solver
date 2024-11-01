@@ -1,7 +1,7 @@
-from data_structures.base_data_structure import BaseDataStructure
-from core.grid import Grid
-from core.node import Node
-from configs.constants import MOVEMENTS
+from ..data_structures.base_data_structure import BaseDataStructure
+from ..core.grid import Grid
+from ..core.node import Node
+from ..configs.constants import MOVEMENTS
 import time
 import tracemalloc
 from abc import ABC, abstractmethod

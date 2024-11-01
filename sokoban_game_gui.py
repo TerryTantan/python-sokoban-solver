@@ -1,7 +1,7 @@
 import pygame
 import sys
 import os
-from solver import Solver
+from sources.solver import Solver
 import threading
 import queue
 from collections import deque
@@ -120,17 +120,18 @@ button_texts = {
 
 
 # Paths to texture images
+GUI_RESOURCES_PATH = "resources/gui"
 TEXTURE_PATHS = {
-    "button": "textures/UI/button.png",
-    "floor": "textures/grid/floor.png",
-    "wall": "textures/grid/wall_side.png",
-    "ares": "textures/grid/ares1.png",
-    "stone": "textures/grid/dark_crate.png",
-    "switch": "textures/grid/orb.png",
-    "ares_on_switch": "textures/grid/ares2.png",
-    "stone_on_switch": "textures/grid/light_crate.png",
-    "background": "textures/UI/back_ground.jpg",
-    "board": "textures/UI/toasts.png",
+    "button": f"{GUI_RESOURCES_PATH}/grid/button.png",
+    "floor": f"{GUI_RESOURCES_PATH}/grid/floor.png",
+    "wall": f"{GUI_RESOURCES_PATH}/grid/wall_side.png",
+    "ares": f"{GUI_RESOURCES_PATH}/grid/ares1.png",
+    "stone": f"{GUI_RESOURCES_PATH}/grid/dark_crate.png",
+    "switch": f"{GUI_RESOURCES_PATH}/grid/orb.png",
+    "ares_on_switch": f"{GUI_RESOURCES_PATH}/grid/ares2.png",
+    "stone_on_switch": f"{GUI_RESOURCES_PATH}/grid/light_crate.png",
+    "background": f"{GUI_RESOURCES_PATH}/grid/back_ground.jpg",
+    "board": f"{GUI_RESOURCES_PATH}/grid/toasts.png",
 }
 
 # Loaded textures
@@ -147,9 +148,10 @@ switches = []
 walls = []
 step_count = [0]
 weght_pushed = [0]
-#
-font = pygame.font.Font("textures/MinecraftBold-nMK1.otf", 36)
-big_font = pygame.font.Font("textures/MinecraftBold-nMK1.otf", 120)
+
+# Fonts
+font = pygame.font.Font(f"{GUI_RESOURCES_PATH}/fonts/MinecraftBold-nMK1.otf", 36)
+big_font = pygame.font.Font(f"{GUI_RESOURCES_PATH}/fonts/MinecraftBold-nMK1.otf", 120)
 
 
 class Button:

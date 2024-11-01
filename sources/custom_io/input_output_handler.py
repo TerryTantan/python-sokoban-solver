@@ -1,4 +1,4 @@
-from core.grid import Grid
+from ..core.grid import Grid
 
 
 class InputOutputHandler:

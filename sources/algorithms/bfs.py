@@ -1,7 +1,6 @@
-from algorithms.base_search import BaseSearch
-from core.node import Node
-from data_structures.queue import Queue
-from core.grid import Grid
+from .base_search import BaseSearch
+from ..data_structures.queue import Queue
+from ..core.grid import Grid
 
 
 class BFS(BaseSearch):
