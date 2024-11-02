@@ -68,7 +68,7 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
   - **core**: Core game logic and essential components.
   - **custom_io**: Input/output handling specific to your game.
   - **data_structures**: Custom data structures used in the game.
-  - **solver**.py: Contains the main solving logic for the Sokoban puzzles.
+  - **solver.py**: Contains the main solving logic for the Sokoban puzzles.
 - **requirements.txt**: Lists all Python package dependencies needed to run the game.
 - **sokoban_game_cli.py**: Command-line interface version of the game.
 - **sokoban_game_gui.py**: Graphical user interface version of the game.
