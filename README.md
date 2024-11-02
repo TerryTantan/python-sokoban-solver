@@ -17,7 +17,7 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 ## How to Set up
 
 - Open your terminal.
-- Change working directory to the project directory.
+- Change your working directory to the project directory.
 - Create a virtual environment
 > `python -m venv venv`
 - Activate the environment
