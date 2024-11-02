@@ -11,20 +11,28 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 
 ## Requirements
 
-- **Python 3.10**
+- **Python 3.10 or higher**
 - **Windows 10 or higher**
 
 ## How to Set up
 
 - Open your terminal.
-- Change directory to the project directory.
-- `python -m venv venv`
-- `venv\Scripts\activate`
-- `pip install -r requirements.txt`
-- `python sokoban_game_gui.py` for GUI version and `python sokoban_game_cli.py` for CLI version.
+- Change working directory to the project directory.
+- Create a virtual environment
+> `python -m venv venv`
+- Activate the environment
+> `venv\Scripts\activate`
+- Install dependencies
+> `pip install -r requirements.txt`
+- Open the game
+ - For GUI version
+ > `python sokoban_game_gui.py`
+ - For CLI version
+ > `python sokoban_game_cli.py`
 
 ## Directory Structure
 
+```
 ├── inputs/
 │   └── inputs/
 ├── outputs/
@@ -45,21 +53,22 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 ├── requirements.txt
 ├── sokoban_game_cli.py
 └── sokoban_game_gui.py
+```
 
 - **inputs**: Contains game levels files for the Sokoban game.
 - **outputs**: Contains result files from different pathfinding algorithms:
-+ **AStar**: Already generated output files from the A* pathfinding algorithm.
-+ **BFS**: Already generated output files from Breadth-First Search algorithm.
-+ **DFS**: Already generated output files from Depth-First Search algorithm.
-+ **UCS**: Already generated output files from Uniform Cost Search algorithm.
+ - **AStar**: Already generated output files from the A* pathfinding algorithm.
+ - **BFS**: Already generated output files from Breadth-First Search algorithm.
+ - **DFS**: Already generated output files from Depth-First Search algorithm.
+ - **UCS**: Already generated output files from Uniform Cost Search algorithm.
 - **resources**: Contains game assets.
 - **sources**: Main source code directory containing:
-+ **algorithms**: Implementation of various pathfinding/solving algorithms.
-+ **configs**: Configuration files for game settings.
-+ **core**: Core game logic and essential components.
-+ **custom_io**: Input/output handling specific to your game.
-+ **data_structures**: Custom data structures used in the game.
-+ **solver**.py: Contains the main solving logic for the Sokoban puzzles.
+ - **algorithms**: Implementation of various pathfinding/solving algorithms.
+ - **configs**: Configuration files for game settings.
+ - **core**: Core game logic and essential components.
+ - **custom_io**: Input/output handling specific to your game.
+ - **data_structures**: Custom data structures used in the game.
+ - **solver**.py: Contains the main solving logic for the Sokoban puzzles.
 - **requirements.txt**: Lists all Python package dependencies needed to run the game.
 - **sokoban_game_cli.py**: Command-line interface version of the game.
 - **sokoban_game_gui.py**: Graphical user interface version of the game.
