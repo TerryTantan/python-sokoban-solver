@@ -18,16 +18,16 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 
 - Open your terminal.
 - Change your working directory to the project directory.
-- Create a virtual environment
+- Create a virtual environment.
 > `python -m venv venv`
-- Activate the environment
+- Activate the environment.
 > `venv\Scripts\activate`
-- Install dependencies
+- Install dependencies.
 > `pip install -r requirements.txt`
-- Open the game
-  - For GUI version
+- Open the game.
+  - For GUI version.
   > `python sokoban_game_gui.py`
-  - For CLI version
+  - For CLI version.
   > `python sokoban_game_cli.py`
 
 ## Directory Structure
