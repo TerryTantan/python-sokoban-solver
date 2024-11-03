@@ -1,3 +1,3 @@
 A*
-Steps: 104, Weight: 29050, Node: 8780, Time (ms): 3488.75, Memory (MB): 4.45
+Steps: 104, Weight: 29050, Node: 8780, Time (ms): 3832.26, Memory (MB): 4.92
 uUUlluurrDDlluurDrdDrddlluRuuulldRluurrdDDDldRRRlluurrrruullDurrddlLLDlUUdrdlldrRuluulluurrDDDrddlluRurD

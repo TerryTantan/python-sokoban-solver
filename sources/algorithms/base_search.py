@@ -5,6 +5,7 @@ from ..configs.constants import MOVEMENTS
 import time
 import tracemalloc
 from abc import ABC, abstractmethod
+from time import sleep
 
 
 class Solution:
