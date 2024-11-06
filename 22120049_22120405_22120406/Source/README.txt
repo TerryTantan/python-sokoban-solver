@@ -72,10 +72,12 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
   - **requirements.txt**: Lists the dependencies required for the project.
 - **Report.pdf**: Report about the application.
 
-## How to Play
-
-1. **Run the Game**: `python sokoban_game.py`
-2. **Navigate Levels**: Use arrow keys to move the character.
-3. **Choose Level**: Click "Levels" to select a level.
-4. **Get Solution**: Select "Solution" and choose an algorithm to solve the level.
-5. **Restart**: Click "Restart" at any point to reset the level.
+## User manual
+1. Play: In "PLAY" mode, use the arrow keys to move Ares.
+2. Select levels: Click "Levels" and choose your favorite level.
+3. Get solution: Select "Solution" and choose the desired algorithm to solve the level.
+4. Stop solving: If the algorithm takes a long time to solve, click "Stop" to exit the waiting screen.
+5. Illustrate solution: Click "Start" to begin simulating the solution. While it’s running, click "Pause" to pause the simulation.
+6. Next step: Click "Next" to perform the next move from the solution.
+7. Win: When all switches are enabled, you win. Click "Restart" to return to the default screen.
+8. Restart: Click "Restart" at any point to reset the level.
