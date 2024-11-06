@@ -33,7 +33,7 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 22120049_22120405_22120406/ 
 ├── Source/ 
 │ ├── Codes/ 
-│ └── Resources/ 
+│ ├── Resources/ 
 │ ├── .gitignore 
 │ ├── input-01.txt 
 │ ├── input-02.txt 
