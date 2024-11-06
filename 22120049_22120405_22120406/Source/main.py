@@ -1,7 +1,7 @@
 import pygame
 import sys
 import os
-from sources.solver import Solver
+from Codes.solver import Solver
 import threading
 import queue
 from collections import deque
@@ -47,7 +47,7 @@ def solve_level(text):
     else:
         level_str = level.__str__()
     solver = Solver(
-        text, f"inputs/input-{level_str}.txt", f"outputs/output-{level_str}.txt"
+        text, os.path.join(FILE_DIR, f"input-{level_str}.txt"), os.path.join(FILE_DIR, f"output-{level_str}.txt"),
     )
     solution = solver.run()  # Nhận đối tượng Solution
     current_solution = solution  # Lưu solution để hiển thị
@@ -120,18 +120,19 @@ button_texts = {
 
 
 # Paths to texture images
-GUI_RESOURCES_PATH = "resources/gui"
+FILE_DIR = os.path.dirname(os.path.abspath(__file__))
+GUI_RESOURCES_PATH = os.path.join(FILE_DIR, "Resources", "Gui")
 TEXTURE_PATHS = {
-    "button": f"{GUI_RESOURCES_PATH}/grid/button.png",
-    "floor": f"{GUI_RESOURCES_PATH}/grid/floor.png",
-    "wall": f"{GUI_RESOURCES_PATH}/grid/wall_side.png",
-    "ares": f"{GUI_RESOURCES_PATH}/grid/ares1.png",
-    "stone": f"{GUI_RESOURCES_PATH}/grid/dark_crate.png",
-    "switch": f"{GUI_RESOURCES_PATH}/grid/orb.png",
-    "ares_on_switch": f"{GUI_RESOURCES_PATH}/grid/ares2.png",
-    "stone_on_switch": f"{GUI_RESOURCES_PATH}/grid/light_crate.png",
-    "background": f"{GUI_RESOURCES_PATH}/grid/back_ground.jpg",
-    "board": f"{GUI_RESOURCES_PATH}/grid/toasts.png",
+    "button": os.path.join(GUI_RESOURCES_PATH, "grid", "button.png"),
+    "floor": os.path.join(GUI_RESOURCES_PATH, "grid", "floor.png"),
+    "wall": os.path.join(GUI_RESOURCES_PATH, "grid", "wall_side.png"),
+    "ares": os.path.join(GUI_RESOURCES_PATH, "grid", "ares1.png"),
+    "stone": os.path.join(GUI_RESOURCES_PATH, "grid", "dark_crate.png"),
+    "switch": os.path.join(GUI_RESOURCES_PATH, "grid", "orb.png"),
+    "ares_on_switch": os.path.join(GUI_RESOURCES_PATH, "grid", "ares2.png"),
+    "stone_on_switch": os.path.join(GUI_RESOURCES_PATH, "grid", "light_crate.png"),
+    "background": os.path.join(GUI_RESOURCES_PATH, "grid", "back_ground.jpg"),
+    "board": os.path.join(GUI_RESOURCES_PATH, "grid", "toasts.png"),
 }
 
 # Loaded textures
@@ -150,8 +151,8 @@ step_count = [0]
 weght_pushed = [0]
 
 # Fonts
-font = pygame.font.Font(f"{GUI_RESOURCES_PATH}/fonts/MinecraftBold-nMK1.otf", 36)
-big_font = pygame.font.Font(f"{GUI_RESOURCES_PATH}/fonts/MinecraftBold-nMK1.otf", 120)
+font = pygame.font.Font(os.path.join(GUI_RESOURCES_PATH, "fonts", "MinecraftBold-nMK1.otf"), 36)
+big_font = pygame.font.Font(os.path.join(GUI_RESOURCES_PATH, "fonts", "MinecraftBold-nMK1.otf"), 120)
 
 
 class Button:
@@ -225,7 +226,7 @@ def read_grid(level):
         level_str = "0" + level.__str__()
     else:
         level_str = level.__str__()
-    with open(f"inputs/input-{level_str}.txt", "r") as file:
+    with open(os.path.join(FILE_DIR, f"input-{level_str}.txt"), "r") as file:
         line = file.readline().split(" ")
         line[-1] = line[-1].split("\n")[0]
         stone_weight = line

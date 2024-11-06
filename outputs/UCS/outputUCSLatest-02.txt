@@ -1,3 +1,0 @@
-UCS
-Steps: 85, Weight: 39, Node: 59219, Time (ms): 7414.22, Memory (MB): 20.76
-RRurDlldrRRRurDDDDDldRRllddrrruUUdlllururRRRRlddrruruulDDDlldrRRRRRRRRldrrUUUUUUUluRR

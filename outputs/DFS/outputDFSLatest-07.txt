@@ -1,3 +1,0 @@
-DFS
-Steps: 188, Weight: 46850, Node: 5246, Time (ms): 823.16, Memory (MB): 2.50
-rulUUlluurrDDlluRldrrDrddlluRurDlldrRRlllurrulullururDDDrrrruullDurrddlLLddlluRldrrUlURRllUllururDDDrruurrddLLLddlluRldrrUlURRllUllururDDDrddlluRurruurrddLLLDlldrRllurUUllururDDDrddlluRurD
