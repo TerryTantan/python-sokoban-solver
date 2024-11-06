@@ -113,8 +113,8 @@ button_texts = {
     "selecting": [f"Level {i+1}" for i in range(10)],
     "solution": ["DFS", "BFS", "UCS", "A*", "Restart"],
     "solving": ["Stop"],
-    "illustrating": ["Back", "Pause", "Next", "Restart"],
-    "pausing": ["Back", "Start", "Next", "Restart"],
+    "illustrating": ["Pause", "Next", "Restart"],
+    "pausing": ["Start", "Next", "Restart"],
     "won": ["Levels", "Restart"],
 }
 
