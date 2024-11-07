@@ -56,7 +56,7 @@ This project is a Sokoban game created with **Pygame**. The game includes a UI w
 │ ├── output-09.txt 
 │ ├── output-10.txt 
 │ ├── main.py 
-│ ├── README.md 
+│ ├── README.txt
 │ └── requirements.txt
 └── Report.pdf
 ```
